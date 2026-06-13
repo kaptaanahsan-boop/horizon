@@ -1306,6 +1306,63 @@
       .hpx-row { grid-template-columns: 1fr; }
       .hpx-edit-bar { flex-wrap: wrap; justify-content: center; }
     }
+
+    /* ─── Blog ─── */
+    .blog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 56px; }
+    .blog-card {
+      background: var(--white); border: 1px solid var(--gray-100); border-radius: var(--radius-lg);
+      overflow: hidden; box-shadow: var(--shadow-sm); transition: var(--transition); display: flex; flex-direction: column;
+    }
+    .blog-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--gray-200); }
+    .blog-img { height: 188px; width: 100%; object-fit: cover; display: block; }
+    .blog-img-fallback {
+      height: 188px; background: linear-gradient(135deg, var(--navy-mid), var(--teal-dark));
+      display: flex; align-items: center; justify-content: center;
+    }
+    .blog-img-fallback svg { width: 48px; height: 48px; stroke: rgba(255,255,255,.85); fill: none; stroke-width: 1.4; }
+    .blog-body { padding: 24px; display: flex; flex-direction: column; flex: 1; }
+    .blog-tag {
+      align-self: flex-start; font-size: 11.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+      color: var(--teal-dark); background: var(--teal-pale); padding: 5px 11px; border-radius: 30px; margin-bottom: 14px;
+    }
+    .blog-card h3 { font-family:'Manrope',sans-serif; font-size: 19px; color: var(--text-dark); line-height: 1.35; margin-bottom: 10px; }
+    .blog-excerpt { font-size: 14px; color: var(--text-muted); line-height: 1.65; flex: 1; }
+    .blog-meta { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text-muted); margin-top: 16px; }
+    .blog-meta .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--gray-200); }
+    .blog-readmore {
+      margin-top: 16px; align-self: flex-start; color: var(--teal-dark); font-weight: 700; font-size: 14px;
+      cursor: pointer; display: inline-flex; align-items: center; gap: 6px; background: none; border: none; font-family: inherit; padding: 0;
+    }
+    .blog-readmore:hover { gap: 9px; }
+    .hpx-reader-img { width: 100%; border-radius: var(--radius-md); margin-bottom: 20px; max-height: 320px; object-fit: cover; }
+    .hpx-reader-body { font-size: 15.5px; color: var(--text-body); line-height: 1.8; }
+    .hpx-reader-body p { margin-bottom: 16px; }
+    .hpx-reader-body h4 { font-family:'Manrope',sans-serif; color: var(--text-dark); font-size: 18px; margin: 22px 0 10px; }
+    @media (max-width: 980px) { .blog-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 680px) { .blog-grid { grid-template-columns: 1fr; } }
+
+    /* ─── Admin CRUD editors ─── */
+    .hpx-item { border: 1px solid var(--gray-100); border-radius: 12px; padding: 16px; margin-bottom: 14px; background: var(--off-white); }
+    .hpx-item-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; gap: 10px; }
+    .hpx-item-head .t { font-size: 13px; font-weight: 800; color: var(--teal-dark); text-transform: uppercase; letter-spacing: .04em; }
+    .hpx-item-tools { display: flex; gap: 6px; }
+    .hpx-icobtn {
+      width: 30px; height: 30px; border-radius: 7px; border: 1px solid var(--gray-100); background: #fff;
+      cursor: pointer; font-size: 14px; color: var(--gray-600); display: flex; align-items: center; justify-content: center; transition: var(--transition);
+    }
+    .hpx-icobtn:hover { background: var(--gray-50); color: var(--text-dark); }
+    .hpx-icobtn.del:hover { background: #FDECEC; color: #C0392B; border-color: #f3c9c4; }
+    .hpx-additem {
+      width: 100%; padding: 13px; border: 1.5px dashed var(--gray-200); border-radius: 11px; background: #fff;
+      color: var(--teal-dark); font-weight: 700; font-size: 14px; cursor: pointer; font-family: inherit; transition: var(--transition); margin-bottom: 8px;
+    }
+    .hpx-additem:hover { border-color: var(--teal); background: var(--teal-pale); }
+    .hpx-savebar {
+      position: sticky; bottom: 0; background: #fff; padding: 14px 0 2px; margin-top: 8px;
+      border-top: 1px solid var(--gray-100); display: flex; gap: 10px; align-items: center; z-index: 3;
+    }
+    .hpx-savebar .sv { font-size: 12.5px; color: var(--text-muted); }
+    .hpx-thumb { width: 46px; height: 46px; border-radius: 8px; object-fit: cover; border: 1px solid var(--gray-100); }
   </style>
 </head>
 <body>
@@ -1398,78 +1455,48 @@
   <div class="hpx-modal-overlay" id="hpxAdmin">
     <div class="hpx-modal admin">
       <div class="hpx-modal-head">
-        <div><h3>Content Manager</h3><p>Edit your site, then Publish to save a content file.</p></div>
+        <div><h3>Content Manager</h3><p>Manage every section, then Publish to go live for all visitors.</p></div>
         <button class="hpx-close" onclick="HPX.closeAdmin()" aria-label="Close">&times;</button>
       </div>
-      <div class="hpx-tabs">
-        <button class="hpx-tab active" data-pane="edit">Edit Content</button>
+      <div class="hpx-tabs" id="hpxTabs">
+        <button class="hpx-tab active" data-pane="pages">Pages &amp; Text</button>
         <button class="hpx-tab" data-pane="stats">Stats</button>
+        <button class="hpx-tab" data-pane="services">Services</button>
+        <button class="hpx-tab" data-pane="why">Why Us</button>
+        <button class="hpx-tab" data-pane="process">Process</button>
         <button class="hpx-tab" data-pane="team">Team</button>
         <button class="hpx-tab" data-pane="reviews">Reviews</button>
+        <button class="hpx-tab" data-pane="blog">Blog</button>
+        <button class="hpx-tab" data-pane="faq">FAQ</button>
+        <button class="hpx-tab" data-pane="contact">Contact</button>
         <button class="hpx-tab" data-pane="brand">Branding</button>
         <button class="hpx-tab" data-pane="leads">Leads</button>
-        <button class="hpx-tab" data-pane="publish">Save / Publish</button>
+        <button class="hpx-tab" data-pane="publish">Publish</button>
       </div>
       <div class="hpx-modal-body">
 
-        <!-- EDIT CONTENT -->
-        <div class="hpx-pane active" data-pane="edit">
+        <!-- PAGES & TEXT (inline) -->
+        <div class="hpx-pane active" data-pane="pages">
           <div class="hpx-callout">
-            <strong>Inline editing.</strong> Click "Start Editing" to edit any text directly on the page — headlines, descriptions, bios, FAQs, footer, and contact details. Click outside a block to save it. Your changes are stored in this browser instantly.
+            <strong>Inline editing.</strong> Turn this on to edit any text directly on the page — hero headline, section intros, about copy, footer text and more. Click a block, type, then click away to save. Repeatable items (services, team, reviews, blog, FAQ) are managed in their own tabs above.
           </div>
           <button class="hpx-btn hpx-btn-primary hpx-btn-block" id="hpxEditToggle" onclick="HPX.toggleEdit()">✏️ Start Editing the Page</button>
-          <p class="hpx-note" style="margin-top:12px;">Tip: while editing, leadership photos show a "change photo" overlay — click to upload a new image.</p>
         </div>
 
-        <!-- STATS -->
-        <div class="hpx-pane" data-pane="stats">
-          <div class="hpx-callout">Edit the four headline statistics. Use <strong>Value</strong> for the number (e.g. 10, 500, 1M, 95) and <strong>Suffix</strong> for the symbol (+, %).</div>
-          <div id="hpxStatsWrap"></div>
-          <button class="hpx-btn hpx-btn-primary" onclick="HPX.saveStats()">Save Stats</button>
-        </div>
-
-        <!-- TEAM -->
-        <div class="hpx-pane" data-pane="team">
-          <div class="hpx-callout">Update leadership LinkedIn links. Names, titles and bios are edited inline on the page (Edit Content tab); photos via the camera overlay while editing.</div>
-          <div class="hpx-field"><label>CEO — LinkedIn URL</label><input type="url" id="hpxCeoLi" placeholder="https://linkedin.com/in/…" /></div>
-          <div class="hpx-field"><label>CFO — LinkedIn URL</label><input type="url" id="hpxCfoLi" placeholder="https://linkedin.com/in/…" /></div>
-          <button class="hpx-btn hpx-btn-primary" onclick="HPX.saveTeam()">Save Team Links</button>
-        </div>
-
-        <!-- REVIEWS -->
-        <div class="hpx-pane" data-pane="reviews">
-          <div class="hpx-callout">Set the star rating (1–5) for each testimonial. Testimonial text, client names and specialties are edited inline on the page.</div>
-          <div id="hpxReviewsWrap"></div>
-          <button class="hpx-btn hpx-btn-primary" onclick="HPX.saveReviews()">Save Ratings</button>
-        </div>
-
-        <!-- BRANDING -->
-        <div class="hpx-pane" data-pane="brand">
-          <div class="hpx-callout">Adjust brand colors and logo. Changes apply across the whole site instantly.</div>
-          <div class="hpx-field">
-            <label>Brand Colors</label>
-            <div class="hpx-swatch-row">
-              <div class="hpx-swatch"><input type="color" id="hpxColNavy" value="#0B1F4B" /><span>Primary (Navy)</span></div>
-              <div class="hpx-swatch"><input type="color" id="hpxColTeal" value="#0E9A8C" /><span>Accent (Teal)</span></div>
-              <button class="hpx-btn hpx-btn-ghost" style="padding:8px 14px;" onclick="HPX.resetColors()">Reset</button>
-            </div>
-          </div>
-          <div class="hpx-field">
-            <label>Logo</label>
-            <div class="hpx-imgprev" id="hpxLogoPrev"><span class="hpx-note">Current logo</span></div>
-            <input type="file" id="hpxLogoFile" accept="image/*" onchange="HPX.uploadLogo(event)" />
-          </div>
-          <hr style="border:none;border-top:1px solid var(--gray-100);margin:20px 0;">
-          <div class="hpx-field">
-            <label>Change Admin Password</label>
-            <input type="password" id="hpxNewPw" placeholder="New password (leave blank to keep current)" />
-          </div>
-          <button class="hpx-btn hpx-btn-primary" onclick="HPX.saveBrand()">Save Branding</button>
-        </div>
+        <div class="hpx-pane" data-pane="stats"><div id="hpxPaneStats"></div></div>
+        <div class="hpx-pane" data-pane="services"><div id="hpxPaneServices"></div></div>
+        <div class="hpx-pane" data-pane="why"><div id="hpxPaneWhy"></div></div>
+        <div class="hpx-pane" data-pane="process"><div id="hpxPaneProcess"></div></div>
+        <div class="hpx-pane" data-pane="team"><div id="hpxPaneTeam"></div></div>
+        <div class="hpx-pane" data-pane="reviews"><div id="hpxPaneReviews"></div></div>
+        <div class="hpx-pane" data-pane="blog"><div id="hpxPaneBlog"></div></div>
+        <div class="hpx-pane" data-pane="faq"><div id="hpxPaneFaq"></div></div>
+        <div class="hpx-pane" data-pane="contact"><div id="hpxPaneContact"></div></div>
+        <div class="hpx-pane" data-pane="brand"><div id="hpxPaneBrand"></div></div>
 
         <!-- LEADS -->
         <div class="hpx-pane" data-pane="leads">
-          <div class="hpx-callout">Consultation requests submitted through the site are stored here in this browser. Export to CSV to keep a copy or share with your team.</div>
+          <div class="hpx-callout">Consultation requests submitted through the site are stored in this browser. Export to CSV to keep a copy or share with your team.</div>
           <div style="display:flex;gap:10px;margin-bottom:16px;">
             <button class="hpx-btn hpx-btn-ghost" onclick="HPX.exportLeads()">⬇ Export CSV</button>
             <button class="hpx-btn hpx-btn-danger" onclick="HPX.clearLeads()">Clear All</button>
@@ -1480,7 +1507,7 @@
         <!-- PUBLISH -->
         <div class="hpx-pane" data-pane="publish">
           <div class="hpx-callout">
-            <strong>How saving works.</strong> Your edits live in this browser automatically. To make them permanent for <em>all</em> visitors, <strong>Export</strong> the content file below, then re-upload it alongside <code>index.html</code> on your host (it loads automatically if named <code>content.json</code>). You can also Import a previously exported file.
+            <strong>How publishing works.</strong> Your edits save in this browser automatically. To make them permanent for <em>all</em> visitors: <strong>Export</strong> the content file below, drop it next to <code>index.html</code> in your project folder, and push to your host (it loads automatically when named <code>content.json</code>).
           </div>
           <button class="hpx-btn hpx-btn-primary hpx-btn-block" style="margin-bottom:10px;" onclick="HPX.exportContent()">⬇ Export Content File (content.json)</button>
           <div class="hpx-field">
@@ -1492,6 +1519,21 @@
           <button class="hpx-btn hpx-btn-ghost hpx-btn-block" style="margin-top:10px;" onclick="HPX.logout()">Log Out of Admin</button>
         </div>
 
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ BLOG READER MODAL ════════ -->
+  <div class="hpx-modal-overlay" id="hpxReader">
+    <div class="hpx-modal" style="max-width:760px;">
+      <div class="hpx-modal-head">
+        <div><h3 id="hpxReaderTitle">Article</h3><p id="hpxReaderMeta"></p></div>
+        <button class="hpx-close" onclick="HPX.closeReader()" aria-label="Close">&times;</button>
+      </div>
+      <div class="hpx-modal-body">
+        <img id="hpxReaderImg" class="hpx-reader-img" alt="" style="display:none;">
+        <div id="hpxReaderBody" class="hpx-reader-body"></div>
+        <button class="hpx-btn hpx-btn-primary" style="margin-top:18px;" onclick="HPX.closeReader(); HPX.openConsult();">Schedule a Consultation</button>
       </div>
     </div>
   </div>
@@ -1522,6 +1564,7 @@
         <a href="#process">Our Process</a>
         <a href="#leadership">Leadership</a>
         <a href="#testimonials">Testimonials</a>
+        <a href="#blog">Blog</a>
         <a href="#faq">FAQ</a>
       </div>
       <div class="nav-cta">
@@ -1540,6 +1583,7 @@
     <a href="#process" onclick="toggleMenu()">Our Process</a>
     <a href="#leadership" onclick="toggleMenu()">Leadership</a>
     <a href="#testimonials" onclick="toggleMenu()">Testimonials</a>
+    <a href="#blog" onclick="toggleMenu()">Blog</a>
     <a href="#faq" onclick="toggleMenu()">FAQ</a>
     <a class="btn btn-primary" href="#final-cta" onclick="toggleMenu()">Schedule Consultation</a>
   </div>
@@ -1710,7 +1754,7 @@
 
   <section id="stats">
     <div class="container">
-      <div class="stats-grid">
+      <div class="stats-grid" id="statsGrid">
         <div class="stat-card">
           <div class="num"><span>10</span>+</div>
           <div class="lbl">Years of Industry Experience</div>
@@ -1745,7 +1789,7 @@
           From initial billing to final collections, we manage every phase of your revenue cycle so you can focus on patient care.
         </p>
       </div>
-      <div class="services-grid">
+      <div class="services-grid" id="servicesGrid">
 
         <!-- 1. Medical Billing -->
         <div class="service-card">
@@ -1900,7 +1944,7 @@
           We combine deep RCM expertise with personalized service to deliver outcomes that generic billing companies simply can't match.
         </p>
       </div>
-      <div class="why-grid">
+      <div class="why-grid" id="whyGrid">
         <div class="why-card">
           <div class="why-num">01</div>
           <h3>Industry Expertise</h3>
@@ -1954,7 +1998,7 @@
           <div class="track-dot"></div>
         </div>
 
-        <div class="process-steps">
+        <div class="process-steps" id="processSteps">
 
           <div class="step" id="pstep0">
             <div class="step-ring-wrap">
@@ -2031,7 +2075,7 @@
           Our executive team brings deep operational and financial expertise in healthcare revenue cycle management.
         </p>
       </div>
-      <div class="team-grid">
+      <div class="team-grid" id="teamGrid">
 
         <!-- CEO -->
         <div class="team-card">
@@ -2093,7 +2137,7 @@
           Real results from real practices. Here's how Horizon Physician Services has impacted healthcare revenue across the country.
         </p>
       </div>
-      <div class="testi-grid">
+      <div class="testi-grid" id="testiGrid">
 
         <div class="testi-card">
           <div class="testi-quote-icon">
@@ -2189,6 +2233,20 @@
     </div>
   </section>
 
+  <!-- ── SECTION 8.5: BLOG ───────────────────────────────────────── -->
+  <section id="blog" class="section-pad">
+    <div class="container">
+      <div class="section-header text-center">
+        <div class="label">Insights &amp; Resources</div>
+        <h2 class="heading-lg">From the Horizon Blog</h2>
+        <p class="text-lead" style="max-width:560px;margin:16px auto 0;">
+          Practical guidance on medical billing, coding, denial management, and revenue cycle strategy for healthcare providers.
+        </p>
+      </div>
+      <div class="blog-grid" id="blogGrid"></div>
+    </div>
+  </section>
+
   <!-- ── SECTION 9: FAQ ──────────────────────────────────────────── -->
   <section id="faq" class="section-pad">
     <div class="container">
@@ -2199,7 +2257,7 @@
           Everything you need to know about partnering with Horizon Physician Services for your revenue cycle management needs.
         </p>
       </div>
-      <div class="faq-wrap">
+      <div class="faq-wrap" id="faqWrap">
 
         <div class="faq-item open">
           <button class="faq-q" onclick="toggleFaq(this)">
@@ -2310,21 +2368,21 @@
         Schedule a consultation today and discover how Horizon Physician Services LLC can help improve cash flow, reduce aging accounts receivable, and optimize reimbursement outcomes for your practice.
       </p>
       <div class="cta-actions">
-        <a class="btn btn-primary btn-lg" href="mailto:info@horizonphysicianservices.com">Book Consultation</a>
-        <a class="btn btn-outline-white btn-lg" href="tel:+1-800-000-0000">Call Us Now</a>
+        <a class="btn btn-primary btn-lg" data-cta-mail href="mailto:info@horizonphysicianservices.com">Book Consultation</a>
+        <a class="btn btn-outline-white btn-lg" data-cta-tel href="tel:+1-800-000-0000">Call Us Now</a>
       </div>
       <div class="contact-info-strip">
         <div class="contact-info-item">
           <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.82 19a19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-2.92-8.72A2 2 0 0 1 4.7 2.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.91 8.9a16 16 0 0 0 6.07 6.07l.52-.92a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-          +1 (800) 000-0000
+          <span data-c="phone">+1 (800) 000-0000</span>
         </div>
         <div class="contact-info-item">
           <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-          info@horizonphysicianservices.com
+          <span data-c="email">info@horizonphysicianservices.com</span>
         </div>
         <div class="contact-info-item">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          Mon – Fri, 8 AM – 6 PM EST
+          <span data-c="hours">Mon – Fri, 8 AM – 6 PM EST</span>
         </div>
       </div>
     </div>
@@ -2344,9 +2402,9 @@
             A trusted partner in healthcare revenue cycle management — delivering accurate billing, collections support, and AR management solutions that strengthen practice finances.
           </p>
           <div class="footer-social">
-            <a class="social-btn" href="#" aria-label="LinkedIn">in</a>
-            <a class="social-btn" href="#" aria-label="Facebook">f</a>
-            <a class="social-btn" href="#" aria-label="Twitter">𝕏</a>
+            <a class="social-btn" data-s="linkedin" href="#" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+            <a class="social-btn" data-s="facebook" href="#" target="_blank" rel="noopener" aria-label="Facebook">f</a>
+            <a class="social-btn" data-s="twitter" href="#" target="_blank" rel="noopener" aria-label="Twitter">𝕏</a>
           </div>
         </div>
 
@@ -2385,19 +2443,19 @@
           <h4>Contact Us</h4>
           <div class="footer-contact-item">
             <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.82 19a19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-2.92-8.72A2 2 0 0 1 4.7 2.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.91 8.9a16 16 0 0 0 6.07 6.07l.52-.92a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-            <span>+1 (800) 000-0000</span>
+            <span data-c="phone">+1 (800) 000-0000</span>
           </div>
           <div class="footer-contact-item">
             <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-            <span>info@horizonphysicianservices.com</span>
+            <span data-c="email">info@horizonphysicianservices.com</span>
           </div>
           <div class="footer-contact-item">
             <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            <span>[City, State, ZIP]<br>United States</span>
+            <span data-c="address">[City, State, ZIP]<br>United States</span>
           </div>
           <div class="footer-contact-item">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            <span>Mon – Fri: 8:00 AM – 6:00 PM EST</span>
+            <span data-c="hours">Mon – Fri: 8:00 AM – 6:00 PM EST</span>
           </div>
         </div>
 
@@ -2616,459 +2674,7 @@
 
   </script>
 
-  <!-- ════════ HPX ADMIN / CMS ENGINE ════════ -->
-  <script>
-  (function () {
-    "use strict";
-
-    var LS_CONTENT = "hpx_content_v1";
-    var LS_LEADS   = "hpx_leads_v1";
-    var LS_SESSION = "hpx_admin_session";
-    var DEFAULT_PW = "horizon2026";
-
-    // Elements eligible for inline text editing (document order = stable key)
-    var SEL = [
-      "#hero .hero-badge", "#hero .hero-headline", "#hero .hero-sub",
-      "#hero .hero-ctas .btn", "#hero .trust-item",
-      "#services .section-header .label", "#services .section-header h2", "#services .section-header .text-lead",
-      "#services .service-card h3", "#services .service-card p",
-      "#about .label", "#about .about-content h2", "#about .about-lead", "#about .about-content > p",
-      "#about .mvv-card h4", "#about .mvv-card p", "#about .about-badge .n", "#about .about-badge .l", "#about .about-img-inner p",
-      "#why .section-header .label", "#why .section-header h2", "#why .section-header .text-lead",
-      "#why .why-card h3", "#why .why-card p",
-      "#process .section-header .label", "#process .section-header h2", "#process .section-header .text-lead",
-      "#process .step-num-badge", "#process .step-title", "#process .step-desc",
-      "#leadership .section-header .label", "#leadership .section-header h2", "#leadership .section-header .text-lead",
-      "#leadership .team-name", "#leadership .team-title", "#leadership .team-photo-badge", "#leadership .team-bio",
-      "#testimonials .section-header .label", "#testimonials .section-header h2", "#testimonials .section-header .text-lead",
-      "#testimonials .testi-text", "#testimonials .testi-name", "#testimonials .testi-spec", "#testimonials .testi-avatar",
-      "#faq .section-header .label", "#faq .section-header h2", "#faq .section-header .text-lead",
-      "#faq .faq-q span", "#faq .faq-a-inner",
-      "#final-cta .label", "#final-cta h2", "#final-cta .text-lead", "#final-cta .cta-actions .btn", "#final-cta .contact-info-item",
-      "#footer .footer-brand p", "#footer .footer-col h4", "#footer .footer-contact-item span", "#footer .footer-bottom p"
-    ].join(",");
-
-    var content = blankContent();
-    var originals = {};   // index -> original innerHTML
-    var editNodes = [];   // ordered editable nodes
-    var editing = false;
-
-    function blankContent() {
-      return { text: {}, stats: null, reviews: null, team: {}, brand: {}, password: null };
-    }
-    function loadLS(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }
-    function saveLS(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
-    function leads() { return loadLS(LS_LEADS) || []; }
-    function getPw() { return (content.password) || DEFAULT_PW; }
-    function persist() { saveLS(LS_CONTENT, content); }
-
-    function toast(msg) {
-      var t = document.getElementById("hpxToast");
-      t.textContent = msg; t.classList.add("show");
-      clearTimeout(t._h); t._h = setTimeout(function () { t.classList.remove("show"); }, 2400);
-    }
-    function openOverlay(id) { document.getElementById(id).classList.add("open"); document.body.style.overflow = "hidden"; }
-    function closeOverlay(id) {
-      document.getElementById(id).classList.remove("open");
-      if (!document.querySelector(".hpx-modal-overlay.open")) document.body.style.overflow = "";
-    }
-
-    /* ───── Collect editable nodes & originals ───── */
-    function indexNodes() {
-      editNodes = Array.prototype.slice.call(document.querySelectorAll(SEL));
-      editNodes.forEach(function (n, i) {
-        n.setAttribute("data-hpx-edit", i);
-        if (!(i in originals)) originals[i] = n.innerHTML;
-      });
-    }
-
-    /* ───── Apply stored content to the page ───── */
-    function applyText() {
-      Object.keys(content.text || {}).forEach(function (i) {
-        if (editNodes[i]) editNodes[i].innerHTML = content.text[i];
-      });
-    }
-    function statCards() { return document.querySelectorAll("#stats .stat-card"); }
-    function readDefaultStats() {
-      return Array.prototype.map.call(statCards(), function (c) {
-        var span = c.querySelector(".num span");
-        var numEl = c.querySelector(".num");
-        var suffix = numEl ? numEl.textContent.replace(span ? span.textContent : "", "").trim() : "";
-        return {
-          value: span ? span.textContent.trim() : "",
-          suffix: suffix,
-          label: (c.querySelector(".lbl") || {}).textContent || "",
-          sublabel: (c.querySelector(".sublbl") || {}).textContent || ""
-        };
-      });
-    }
-    function applyStats() {
-      if (!content.stats) return;
-      var cards = statCards();
-      content.stats.forEach(function (s, i) {
-        if (!cards[i]) return;
-        var numEl = cards[i].querySelector(".num");
-        if (numEl) numEl.innerHTML = "<span>" + (s.value || "") + "</span>" + (s.suffix || "");
-        var lbl = cards[i].querySelector(".lbl"); if (lbl) lbl.textContent = s.label;
-        var sub = cards[i].querySelector(".sublbl"); if (sub) sub.textContent = s.sublabel;
-      });
-    }
-    function reviewCards() { return document.querySelectorAll("#testimonials .testi-card"); }
-    function applyReviews() {
-      if (!content.reviews) return;
-      var cards = reviewCards();
-      content.reviews.forEach(function (r, i) {
-        if (!cards[i]) return;
-        var wrap = cards[i].querySelector(".stars");
-        if (wrap) {
-          var html = "";
-          for (var s = 1; s <= 5; s++) html += '<span class="star" style="opacity:' + (s <= r ? 1 : .25) + '">★</span>';
-          wrap.innerHTML = html;
-        }
-      });
-    }
-    function applyTeam() {
-      var ceo = document.querySelector('[data-hpx-linkedin="ceo"]');
-      var cfo = document.querySelector('[data-hpx-linkedin="cfo"]');
-      if (ceo) ceo.href = content.team.ceoLi || "#";
-      if (cfo) cfo.href = content.team.cfoLi || "#";
-      if (content.team.ceoPhoto) { var p = document.querySelector('[data-hpx-photo="ceo"]'); if (p) p.src = content.team.ceoPhoto; }
-      if (content.team.cfoPhoto) { var q = document.querySelector('[data-hpx-photo="cfo"]'); if (q) q.src = content.team.cfoPhoto; }
-    }
-    function shade(hex, pct) {
-      var n = parseInt(hex.slice(1), 16), r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
-      var f = pct < 0 ? 0 : 255, t = Math.abs(pct);
-      r = Math.round((f - r) * t + r); g = Math.round((f - g) * t + g); b = Math.round((f - b) * t + b);
-      return "#" + (1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1);
-    }
-    function applyBrand() {
-      var root = document.documentElement.style;
-      if (content.brand.navy) {
-        root.setProperty("--navy", content.brand.navy);
-        root.setProperty("--navy-dark", shade(content.brand.navy, -0.35));
-        root.setProperty("--navy-mid", shade(content.brand.navy, 0.18));
-        root.setProperty("--text-dark", shade(content.brand.navy, -0.15));
-      }
-      if (content.brand.teal) {
-        root.setProperty("--teal", content.brand.teal);
-        root.setProperty("--teal-dark", shade(content.brand.teal, -0.25));
-        root.setProperty("--teal-light", shade(content.brand.teal, 0.18));
-        root.setProperty("--teal-pale", shade(content.brand.teal, 0.88));
-      }
-      if (content.brand.logo) {
-        document.querySelectorAll(".nav-logo img").forEach(function (img) { img.src = content.brand.logo; });
-      }
-    }
-    function applyAll() { applyText(); applyStats(); applyReviews(); applyTeam(); applyBrand(); }
-
-    /* ───── Inline edit mode ───── */
-    function setEditable(on) {
-      editNodes.forEach(function (n) {
-        if (on) {
-          n.setAttribute("contenteditable", "true");
-          n.addEventListener("blur", onEditBlur);
-          n.addEventListener("keydown", onEditKey);
-        } else {
-          n.removeAttribute("contenteditable");
-          n.removeEventListener("blur", onEditBlur);
-          n.removeEventListener("keydown", onEditKey);
-        }
-      });
-      document.querySelectorAll("[data-hpx-photo]").forEach(function (img) {
-        img.onclick = on ? function () { changePhoto(img.getAttribute("data-hpx-photo")); } : null;
-      });
-    }
-    function onEditKey(e) { if (e.key === "Escape") e.target.blur(); }
-    function onEditBlur(e) {
-      var i = e.target.getAttribute("data-hpx-edit");
-      content.text[i] = e.target.innerHTML;
-      persist();
-    }
-    function toggleEdit() {
-      editing = !editing;
-      document.body.classList.toggle("hpx-editing", editing);
-      document.getElementById("hpxEditBar").classList.toggle("show", editing);
-      document.getElementById("hpxFab").classList.toggle("show", !editing && isAuthed());
-      var b = document.getElementById("hpxEditToggle");
-      if (b) b.textContent = editing ? "✔ Stop Editing" : "✏️ Start Editing the Page";
-      setEditable(editing);
-      if (editing) { closeOverlay("hpxAdmin"); toast("Editing on — click any text to change it"); }
-      else { persist(); toast("Changes saved in this browser"); }
-    }
-    function changePhoto(which) {
-      var inp = document.createElement("input");
-      inp.type = "file"; inp.accept = "image/*";
-      inp.onchange = function () {
-        var f = inp.files[0]; if (!f) return;
-        var rd = new FileReader();
-        rd.onload = function () {
-          content.team[which + "Photo"] = rd.result;
-          var img = document.querySelector('[data-hpx-photo="' + which + '"]');
-          if (img) img.src = rd.result;
-          persist(); toast("Photo updated");
-        };
-        rd.readAsDataURL(f);
-      };
-      inp.click();
-    }
-
-    /* ───── Auth ───── */
-    function isAuthed() { return sessionStorage.getItem(LS_SESSION) === "1"; }
-    function openAdmin() {
-      if (!isAuthed()) { openOverlay("hpxLogin"); setTimeout(function(){ var p=document.getElementById("hpxLoginPw"); if(p) p.focus(); }, 50); return; }
-      refreshPanels(); openOverlay("hpxAdmin");
-    }
-    function login(e) {
-      e.preventDefault();
-      var pw = document.getElementById("hpxLoginPw").value;
-      if (pw === getPw()) {
-        sessionStorage.setItem(LS_SESSION, "1");
-        document.getElementById("hpxLoginErr").style.display = "none";
-        document.getElementById("hpxLoginPw").value = "";
-        closeOverlay("hpxLogin");
-        document.getElementById("hpxFab").classList.add("show");
-        refreshPanels(); openOverlay("hpxAdmin");
-      } else {
-        document.getElementById("hpxLoginErr").style.display = "block";
-      }
-      return false;
-    }
-    function logout() {
-      sessionStorage.removeItem(LS_SESSION);
-      if (editing) toggleEdit();
-      closeOverlay("hpxAdmin");
-      document.getElementById("hpxFab").classList.remove("show");
-      toast("Logged out");
-    }
-
-    /* ───── Panel population ───── */
-    function refreshPanels() {
-      // Stats
-      var sw = document.getElementById("hpxStatsWrap");
-      var stats = content.stats || readDefaultStats();
-      sw.innerHTML = "";
-      stats.forEach(function (s, i) {
-        sw.insertAdjacentHTML("beforeend",
-          '<div class="hpx-stat-block"><div class="bt">Stat ' + (i + 1) + '</div>' +
-          '<div class="hpx-row"><div class="hpx-field"><label>Value</label><input data-st="' + i + '-value" value="' + esc(s.value) + '"></div>' +
-          '<div class="hpx-field"><label>Suffix</label><input data-st="' + i + '-suffix" value="' + esc(s.suffix) + '"></div></div>' +
-          '<div class="hpx-field"><label>Label</label><input data-st="' + i + '-label" value="' + esc(s.label) + '"></div>' +
-          '<div class="hpx-field"><label>Sub-label</label><input data-st="' + i + '-sublabel" value="' + esc(s.sublabel) + '"></div></div>');
-      });
-      // Reviews
-      var rw = document.getElementById("hpxReviewsWrap");
-      var cards = reviewCards();
-      var reviews = content.reviews || Array.prototype.map.call(cards, function () { return 5; });
-      rw.innerHTML = "";
-      Array.prototype.forEach.call(cards, function (c, i) {
-        var nm = (c.querySelector(".testi-name") || {}).textContent || ("Review " + (i + 1));
-        var opts = "";
-        for (var v = 5; v >= 1; v--) opts += '<option value="' + v + '"' + (reviews[i] == v ? " selected" : "") + '>' + v + " ★</option>";
-        rw.insertAdjacentHTML("beforeend",
-          '<div class="hpx-field"><label>' + esc(nm) + '</label><select data-rv="' + i + '">' + opts + "</select></div>");
-      });
-      // Team
-      document.getElementById("hpxCeoLi").value = content.team.ceoLi || "";
-      document.getElementById("hpxCfoLi").value = content.team.cfoLi || "";
-      // Brand
-      if (content.brand.navy) document.getElementById("hpxColNavy").value = content.brand.navy;
-      if (content.brand.teal) document.getElementById("hpxColTeal").value = content.brand.teal;
-      var lp = document.getElementById("hpxLogoPrev");
-      var logoSrc = content.brand.logo || (document.querySelector(".nav-logo img") || {}).src;
-      lp.innerHTML = logoSrc ? '<img src="' + logoSrc + '">' : '<span class="hpx-note">No logo</span>';
-      // Leads
-      renderLeads();
-    }
-    function esc(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;"); }
-
-    /* ───── Saves ───── */
-    function saveStats() {
-      var n = statCards().length, arr = [];
-      for (var i = 0; i < n; i++) {
-        arr.push({
-          value: val("[data-st='" + i + "-value']"),
-          suffix: val("[data-st='" + i + "-suffix']"),
-          label: val("[data-st='" + i + "-label']"),
-          sublabel: val("[data-st='" + i + "-sublabel']")
-        });
-      }
-      content.stats = arr; persist(); applyStats(); toast("Stats saved");
-    }
-    function saveReviews() {
-      var arr = [];
-      document.querySelectorAll("[data-rv]").forEach(function (sel) { arr[+sel.getAttribute("data-rv")] = +sel.value; });
-      content.reviews = arr; persist(); applyReviews(); toast("Ratings saved");
-    }
-    function saveTeam() {
-      content.team.ceoLi = document.getElementById("hpxCeoLi").value.trim();
-      content.team.cfoLi = document.getElementById("hpxCfoLi").value.trim();
-      persist(); applyTeam(); toast("Team links saved");
-    }
-    function saveBrand() {
-      content.brand.navy = document.getElementById("hpxColNavy").value;
-      content.brand.teal = document.getElementById("hpxColTeal").value;
-      var np = document.getElementById("hpxNewPw").value;
-      if (np) { content.password = np; document.getElementById("hpxNewPw").value = ""; }
-      persist(); applyBrand(); toast("Branding saved");
-    }
-    function resetColors() {
-      delete content.brand.navy; delete content.brand.teal;
-      var root = document.documentElement.style;
-      ["--navy","--navy-dark","--navy-mid","--text-dark","--teal","--teal-dark","--teal-light","--teal-pale"].forEach(function(v){ root.removeProperty(v); });
-      persist(); refreshPanels(); toast("Colors reset");
-    }
-    function uploadLogo(e) {
-      var f = e.target.files[0]; if (!f) return;
-      var rd = new FileReader();
-      rd.onload = function () { content.brand.logo = rd.result; persist(); applyBrand(); refreshPanels(); toast("Logo updated"); };
-      rd.readAsDataURL(f);
-    }
-    function val(sel) { var el = document.querySelector(sel); return el ? el.value : ""; }
-
-    /* ───── Leads ───── */
-    function submitLead(e) {
-      e.preventDefault();
-      var f = e.target, d = {};
-      ["name","practice","email","phone","interest","message"].forEach(function (k) { d[k] = (f.elements[k] ? f.elements[k].value : "").trim(); });
-      d.date = new Date().toISOString();
-      var list = leads(); list.unshift(d); saveLS(LS_LEADS, list);
-      f.reset();
-      f.style.display = "none";
-      document.getElementById("hpxConsultSuccess").style.display = "block";
-      return false;
-    }
-    function renderLeads() {
-      var wrap = document.getElementById("hpxLeadsWrap");
-      var list = leads();
-      if (!list.length) { wrap.innerHTML = '<div class="hpx-leads-empty">No consultation requests yet.</div>'; return; }
-      wrap.innerHTML = list.map(function (l) {
-        var dt = new Date(l.date);
-        return '<div class="hpx-lead"><div class="lh"><span class="nm">' + esc(l.name || "—") + '</span>' +
-          '<span class="dt">' + dt.toLocaleString() + '</span></div>' +
-          '<div class="meta">' + esc(l.practice || "") + (l.interest ? " · " + esc(l.interest) : "") + '</div>' +
-          '<div class="meta">' + esc(l.email || "") + (l.phone ? " · " + esc(l.phone) : "") + '</div>' +
-          (l.message ? '<div class="msg">"' + esc(l.message) + '"</div>' : "") + '</div>';
-      }).join("");
-    }
-    function exportLeads() {
-      var list = leads();
-      if (!list.length) { toast("No leads to export"); return; }
-      var cols = ["date","name","practice","email","phone","interest","message"];
-      var csv = cols.join(",") + "\n" + list.map(function (l) {
-        return cols.map(function (c) { return '"' + String(l[c] || "").replace(/"/g, '""') + '"'; }).join(",");
-      }).join("\n");
-      download(csv, "horizon-leads.csv", "text/csv");
-    }
-    function clearLeads() {
-      if (!confirm("Delete all stored consultation requests? This cannot be undone.")) return;
-      saveLS(LS_LEADS, []); renderLeads(); toast("Leads cleared");
-    }
-
-    /* ───── Export / Import / Reset ───── */
-    function download(data, name, type) {
-      var blob = new Blob([data], { type: type || "application/json" });
-      var a = document.createElement("a");
-      a.href = URL.createObjectURL(blob); a.download = name; a.click();
-      setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
-    }
-    function exportContent() { download(JSON.stringify(content, null, 2), "content.json", "application/json"); toast("Content exported"); }
-    function importContent(e) {
-      var f = e.target.files[0]; if (!f) return;
-      var rd = new FileReader();
-      rd.onload = function () {
-        try {
-          var obj = JSON.parse(rd.result);
-          content = Object.assign(blankContent(), obj);
-          persist(); applyAll(); refreshPanels(); toast("Content imported");
-        } catch (err) { toast("Invalid content file"); }
-      };
-      rd.readAsText(f);
-    }
-    function resetAll() {
-      if (!confirm("Reset ALL content back to the original site text and design? Your edits in this browser will be removed.")) return;
-      // restore originals
-      Object.keys(originals).forEach(function (i) { if (editNodes[i]) editNodes[i].innerHTML = originals[i]; });
-      content = blankContent();
-      localStorage.removeItem(LS_CONTENT);
-      var root = document.documentElement.style;
-      ["--navy","--navy-dark","--navy-mid","--text-dark","--teal","--teal-dark","--teal-light","--teal-pale"].forEach(function(v){ root.removeProperty(v); });
-      applyStats(); applyReviews(); applyTeam();
-      refreshPanels(); toast("Content reset to original");
-    }
-
-    /* ───── Consultation modal ───── */
-    function openConsult() {
-      if (editing) return;
-      document.getElementById("hpxConsultForm").style.display = "";
-      document.getElementById("hpxConsultSuccess").style.display = "none";
-      openOverlay("hpxConsult");
-    }
-    function wireCTAs() {
-      var triggers = [];
-      [".nav-cta .btn", ".mobile-menu .btn", "#hero .hero-ctas .btn-primary", "#final-cta .cta-actions .btn-primary"]
-        .forEach(function (s) { document.querySelectorAll(s).forEach(function (el) { triggers.push(el); }); });
-      triggers.forEach(function (el) {
-        el.addEventListener("click", function (e) {
-          e.preventDefault();           // never let these jump the page
-          if (editing) return;          // in edit mode, allow text editing instead
-          openConsult();
-        });
-      });
-    }
-
-    /* ───── Tabs & overlay close ───── */
-    function wireTabs() {
-      document.querySelectorAll(".hpx-tab").forEach(function (t) {
-        t.addEventListener("click", function () {
-          var p = t.getAttribute("data-pane");
-          document.querySelectorAll(".hpx-tab").forEach(function (x) { x.classList.toggle("active", x === t); });
-          document.querySelectorAll(".hpx-pane").forEach(function (x) { x.classList.toggle("active", x.getAttribute("data-pane") === p); });
-        });
-      });
-      document.querySelectorAll(".hpx-modal-overlay").forEach(function (ov) {
-        ov.addEventListener("click", function (e) { if (e.target === ov) closeOverlay(ov.id); });
-      });
-      document.addEventListener("keydown", function (e) {
-        if (e.key === "Escape") document.querySelectorAll(".hpx-modal-overlay.open").forEach(function (o) { closeOverlay(o.id); });
-        // Secret shortcut: Ctrl/Cmd + Shift + A → admin
-        if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === "A" || e.key === "a")) { e.preventDefault(); openAdmin(); }
-      });
-    }
-
-    /* ───── Public API ───── */
-    window.HPX = {
-      openAdmin: openAdmin, closeAdmin: function () { closeOverlay("hpxAdmin"); },
-      closeLogin: function () { closeOverlay("hpxLogin"); }, login: login, logout: logout,
-      toggleEdit: toggleEdit, saveStats: saveStats, saveReviews: saveReviews, saveTeam: saveTeam,
-      saveBrand: saveBrand, resetColors: resetColors, uploadLogo: uploadLogo,
-      exportContent: exportContent, importContent: importContent, resetAll: resetAll,
-      submitLead: submitLead, closeConsult: function () { closeOverlay("hpxConsult"); },
-      exportLeads: exportLeads, clearLeads: clearLeads
-    };
-
-    /* ───── Boot ───── */
-    function boot() {
-      indexNodes();
-      var stored = loadLS(LS_CONTENT);
-      var ready = function () {
-        applyAll(); wireCTAs(); wireTabs();
-        if (location.hash === "#admin" || /[?&]admin/.test(location.search)) openAdmin();
-        if (isAuthed()) document.getElementById("hpxFab").classList.add("show");
-      };
-      if (stored) { content = Object.assign(blankContent(), stored); ready(); }
-      else {
-        // Try to load a published content.json sitting next to index.html
-        fetch("content.json", { cache: "no-store" })
-          .then(function (r) { return r.ok ? r.json() : null; })
-          .then(function (obj) { if (obj) content = Object.assign(blankContent(), obj); })
-          .catch(function () {})
-          .finally(ready);
-      }
-    }
-    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
-    else boot();
-  })();
-  </script>
+  <script src="app.js"></script>
 
 </body>
 </html>

@@ -537,7 +537,6 @@
     $all(".hpx-modal-overlay").forEach(function (ov) { ov.addEventListener("click", function (e) { if (e.target === ov) closeOverlay(ov.id); }); });
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape") $all(".hpx-modal-overlay.open").forEach(function (o) { closeOverlay(o.id); });
-      if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === "A" || e.key === "a")) { e.preventDefault(); openAdmin(); }
     });
   }
 

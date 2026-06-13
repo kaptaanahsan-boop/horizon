@@ -2570,8 +2570,7 @@
 
   </script>
 
-  <script src="cms-shared.js"></script>
-  <script src="site.js"></script>
+  <script src="app.js"></script>
 
 </body>
 </html>

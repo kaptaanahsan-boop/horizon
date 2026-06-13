@@ -1,35 +1,43 @@
 # Horizon Physician Services — Admin Guide
 
-Your site has a full built-in content manager. No server or database needed — everything runs inside `index.html` + `app.js`.
+The website now has a **separate admin dashboard** on its own page. The public site no longer has any on-site editing — it just displays your content.
 
-## Logging in
-Open the site and do any one of these:
-- Click the **Admin** link in the footer, or
-- Add `#admin` to the URL (e.g. `horizonphysician.com/#admin`), or
-- Press **Ctrl/Cmd + Shift + A**.
+## Opening the admin
+Go to:
 
-**Default password:** `horizon2026` — change it under the **Branding** tab right away (it's visible in your public GitHub repo until you do).
+```
+https://horizonphysician.com/admin.html
+```
 
-## What you can manage (every tab)
-- **Pages & Text** — turn on inline editing to click and edit any fixed text directly on the page: hero headline, section intros, About copy, footer text, mission/vision/values.
-- **Stats** — add / remove / reorder / edit the headline number cards (value, suffix, label, sub-label).
-- **Services** — add / remove / reorder services; pick an icon, edit title and description.
-- **Why Us** — add / remove / edit the "why choose us" cards.
-- **Process** — add / remove / reorder workflow steps (emoji, badge, title, description).
-- **Team** — add / remove team members: upload a photo, set name, title, badge, bio, and LinkedIn URL.
-- **Reviews** — add / remove testimonials, set star rating, client name and specialty.
-- **Blog** — add / remove posts: cover image, title, category, date, author, excerpt, and full article. Posts open in an in-page reader. (Comes with 3 starter posts you can edit or delete.)
-- **FAQ** — add / remove / edit questions and answers.
-- **Contact** — set phone, email, address, office hours, and social links once; they update across the CTA band and footer everywhere.
-- **Branding** — company name, brand colors, logo upload, and the admin password.
-- **Leads** — consultation requests submitted through the site; export to CSV.
+Sign in with your password. **Default: `horizon2026`** — change it immediately under the **Branding** tab.
 
-In every section editor: **＋ Add** creates a new item, **↑ ↓** reorder, **🗑** deletes, and **Save** applies it to the live page. Add/remove/reorder buttons auto-save your typed text first.
+> The admin works on the live (hosted) site. Opening it from a local file won't load the live preview because browsers block file access.
 
-## How publishing works (important)
-Your edits save **instantly in this browser** so you see them right away. To make them permanent for **all visitors**:
+## The dashboard
+A normal control panel: a sidebar of sections on the left, the editor in the middle, and a **live preview** of your site on the right that refreshes every time you save.
 
-1. In the admin, open **Publish → Export Content File**. This downloads `content.json`.
+What you can manage:
+
+- **Pages & Text** — all fixed text: hero headline/subtext/buttons, trust badges, every section's intro, About copy, mission/vision/values, final CTA, footer description.
+- **Stats** — add / remove / reorder the headline number cards.
+- **Services** — add / remove / reorder; pick an icon, edit title and description.
+- **Why Us** — the "why choose us" cards.
+- **Process** — workflow steps (emoji, badge, title, description).
+- **Team** — add / remove members: photo upload, name, title, badge, bio, LinkedIn.
+- **Reviews** — testimonials with star ratings.
+- **Blog** — add / remove posts (cover image, title, category, date, author, excerpt, full article). Posts open in an in-page reader on the site. Ships with 3 starter posts.
+- **FAQ** — questions and answers.
+- **Contact** — phone, email, address, hours, social links — updates the CTA band and footer everywhere.
+- **Branding** — company name, brand colors, logo, and admin password.
+- **Leads** — consultation requests from the site; export to CSV.
+- **Publish** — export/import the content file; reset.
+
+In each section: **＋ Add**, **↑ ↓** reorder, **🗑** delete, and **Save**. Saving updates the preview instantly.
+
+## Publishing (making edits permanent for everyone)
+Edits you Save are stored in your browser and show in the preview right away. To make them live for **all visitors**:
+
+1. Go to **Publish → Export content.json**.
 2. Put that `content.json` in your project folder next to `index.html`.
 3. Push it live:
    ```
@@ -37,14 +45,16 @@ Your edits save **instantly in this browser** so you see them right away. To mak
    git commit -m "Update site content"
    git push
    ```
-   Vercel auto-redeploys and everyone sees the changes. The site loads `content.json` automatically.
+   Vercel redeploys and everyone sees the changes. The site loads `content.json` automatically.
 
-To move edits between computers, use **Export** on one and **Import** on the other.
-**Reset All Content** restores the original site.
+## Files in this project
+- `index.html` — the public website (structure + styles).
+- `cms-shared.js` — shared content definitions used by both the site and the admin.
+- `site.js` — renders the public site from your content.
+- `admin.html` + `admin.js` — the standalone admin dashboard.
+- `content.json` — (optional) your published content, created when you Export.
+- `app.js` — deprecated/empty, no longer used (safe to ignore).
 
-## Files
-- `index.html` — page structure, styles, and the admin UI shell.
-- `app.js` — the content-management engine. **Both files must be deployed together.**
-- `content.json` — (optional) your published content. Created when you Export.
+**All of these must be deployed together** — they're already in your folder, so `git add .` includes them.
 
-> Note: this is a no-server setup, so the consultation form captures leads locally (viewable under the Leads tab) rather than emailing them automatically. If you later want submissions emailed, that can be added with a small form service.
+> This is a no-server setup, so the consultation form stores leads in the browser (Leads tab) rather than emailing them. Email delivery can be added later with a small form service if you want.

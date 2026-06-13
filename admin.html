@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Horizon CMS — Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root{
+      --navy:#0B1F4B;--navy-mid:#122460;--teal:#0E9A8C;--teal-dark:#0A7A6F;--teal-pale:#E8F8F7;
+      --white:#fff;--off-white:#F7F9FC;--gray-50:#F0F4FA;--gray-100:#E4EAF3;--gray-200:#C8D3E6;
+      --gray-600:#536080;--gray-800:#253050;--text-dark:#0D1B36;--text-body:#3D4F6E;--text-muted:#7585A2;
+      --shadow:0 4px 16px rgba(11,31,75,.10);--radius:12px;--t:all .2s cubic-bezier(.4,0,.2,1);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',system-ui,sans-serif;color:var(--text-body);background:var(--gray-50);line-height:1.55;-webkit-font-smoothing:antialiased}
+    img{max-width:100%;display:block}
+    button{font-family:inherit}
+
+    /* login */
+    #login{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--navy),var(--navy-mid));padding:20px;z-index:10}
+    .login-card{background:#fff;border-radius:18px;box-shadow:var(--shadow);width:100%;max-width:400px;padding:36px 32px;text-align:center}
+    .login-card .logo{width:54px;height:54px;border-radius:14px;background:var(--teal-pale);display:flex;align-items:center;justify-content:center;margin:0 auto 18px}
+    .login-card .logo svg{width:28px;height:28px;stroke:var(--teal-dark);fill:none;stroke-width:2}
+    .login-card h1{font-family:'Manrope',sans-serif;font-size:21px;color:var(--text-dark);margin-bottom:4px}
+    .login-card p{font-size:13.5px;color:var(--text-muted);margin-bottom:22px}
+    .login-err{color:#C0392B;font-size:13px;margin-top:10px;display:none}
+
+    /* shell */
+    #app{display:none;min-height:100vh;flex-direction:column}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--navy);color:#fff;padding:12px 20px;position:sticky;top:0;z-index:5}
+    .topbar .brand{display:flex;align-items:center;gap:10px;font-family:'Manrope',sans-serif;font-weight:800;font-size:16px}
+    .topbar .brand .dot{width:26px;height:26px;border-radius:7px;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:14px}
+    .topbar .actions{display:flex;gap:8px;flex-wrap:wrap}
+    .layout{display:flex;flex:1;min-height:0}
+    .sidebar{width:210px;flex-shrink:0;background:#fff;border-right:1px solid var(--gray-100);padding:14px 10px;overflow-y:auto}
+    .navbtn{display:block;width:100%;text-align:left;padding:10px 13px;border:none;background:none;border-radius:9px;font-size:14px;font-weight:600;color:var(--text-body);cursor:pointer;margin-bottom:2px;transition:var(--t)}
+    .navbtn:hover{background:var(--gray-50);color:var(--text-dark)}
+    .navbtn.active{background:var(--teal-pale);color:var(--teal-dark)}
+    .navbtn .count{float:right;font-size:11px;background:var(--gray-100);color:var(--gray-600);border-radius:20px;padding:1px 8px;font-weight:700}
+    .main{flex:1;display:flex;min-width:0}
+    .editor{flex:1;padding:26px 28px;overflow-y:auto;max-height:calc(100vh - 50px)}
+    .editor h2{font-family:'Manrope',sans-serif;font-size:21px;color:var(--text-dark);margin-bottom:4px}
+    .editor .sub{font-size:13.5px;color:var(--text-muted);margin-bottom:20px}
+    .preview{width:42%;max-width:620px;flex-shrink:0;border-left:1px solid var(--gray-100);background:#fff;display:flex;flex-direction:column}
+    .preview .ph{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-bottom:1px solid var(--gray-100);font-size:12.5px;color:var(--text-muted)}
+    .preview iframe{flex:1;border:none;width:100%;background:#fff}
+    .preview.hidden{display:none}
+    .group-h{font-family:'Manrope',sans-serif;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--teal-dark);margin:22px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--gray-100)}
+    .group-h:first-child{margin-top:0}
+
+    /* shared form bits */
+    .hpx-field{margin-bottom:15px}
+    .hpx-field label{display:block;font-size:13px;font-weight:600;color:var(--text-dark);margin-bottom:6px}
+    .hpx-field input,.hpx-field textarea,.hpx-field select{width:100%;padding:10px 12px;border:1.5px solid var(--gray-100);border-radius:9px;font-family:inherit;font-size:14px;color:var(--text-dark);background:var(--off-white);transition:var(--t)}
+    .hpx-field input:focus,.hpx-field textarea:focus,.hpx-field select:focus{outline:none;border-color:var(--teal);background:#fff;box-shadow:0 0 0 3px var(--teal-pale)}
+    .hpx-field textarea{resize:vertical;min-height:78px}
+    .hpx-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .hpx-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 18px;border-radius:9px;border:none;cursor:pointer;font-size:14px;font-weight:700;transition:var(--t)}
+    .hpx-btn-primary{background:var(--teal);color:#fff}.hpx-btn-primary:hover{background:var(--teal-dark)}
+    .hpx-btn-ghost{background:var(--gray-50);color:var(--text-dark)}.hpx-btn-ghost:hover{background:var(--gray-100)}
+    .hpx-btn-light{background:rgba(255,255,255,.14);color:#fff}.hpx-btn-light:hover{background:rgba(255,255,255,.24)}
+    .hpx-btn-danger{background:#FDECEC;color:#C0392B}.hpx-btn-danger:hover{background:#f8d7d4}
+    .hpx-btn-block{width:100%}
+    .hpx-note{font-size:12.5px;color:var(--text-muted);line-height:1.6;margin-top:4px}
+    .hpx-callout{background:var(--teal-pale);border:1px solid #cdeeea;border-radius:10px;padding:13px 15px;font-size:13px;color:var(--gray-800);line-height:1.6;margin-bottom:18px}
+    .hpx-callout strong{color:var(--teal-dark)}
+    .hpx-item{border:1px solid var(--gray-100);border-radius:12px;padding:16px;margin-bottom:14px;background:var(--off-white)}
+    .hpx-item-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:10px}
+    .hpx-item-head .t{font-size:12.5px;font-weight:800;color:var(--teal-dark);text-transform:uppercase;letter-spacing:.04em}
+    .hpx-item-tools{display:flex;gap:6px}
+    .hpx-icobtn{width:30px;height:30px;border-radius:7px;border:1px solid var(--gray-100);background:#fff;cursor:pointer;font-size:14px;color:var(--gray-600);display:flex;align-items:center;justify-content:center;transition:var(--t)}
+    .hpx-icobtn:hover{background:var(--gray-50);color:var(--text-dark)}
+    .hpx-icobtn.del:hover{background:#FDECEC;color:#C0392B;border-color:#f3c9c4}
+    .hpx-additem{width:100%;padding:13px;border:1.5px dashed var(--gray-200);border-radius:11px;background:#fff;color:var(--teal-dark);font-weight:700;font-size:14px;cursor:pointer;transition:var(--t);margin-bottom:8px}
+    .hpx-additem:hover{border-color:var(--teal);background:var(--teal-pale)}
+    .hpx-savebar{position:sticky;bottom:0;background:var(--gray-50);padding:14px 0 4px;margin-top:10px;border-top:1px solid var(--gray-100);display:flex;gap:10px;align-items:center;z-index:2}
+    .hpx-savebar .sv{font-size:12.5px;color:var(--text-muted)}
+    .hpx-swatch-row{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+    .hpx-swatch{display:flex;align-items:center;gap:10px}
+    .hpx-swatch input[type=color]{width:46px;height:38px;padding:2px;border-radius:8px;cursor:pointer;border:1px solid var(--gray-100)}
+    .hpx-imgprev{width:100%;height:78px;border:1.5px dashed var(--gray-200);border-radius:10px;display:flex;align-items:center;justify-content:center;background:var(--off-white);overflow:hidden;margin-bottom:8px}
+    .hpx-imgprev img{max-height:64px;width:auto}
+    .hpx-thumb{width:46px;height:46px;border-radius:8px;object-fit:cover;border:1px solid var(--gray-100)}
+    .hpx-lead{border:1px solid var(--gray-100);border-radius:10px;padding:14px 16px;margin-bottom:10px;background:#fff}
+    .hpx-lead .lh{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+    .hpx-lead .nm{font-weight:700;color:var(--text-dark);font-size:14.5px}
+    .hpx-lead .dt{font-size:12px;color:var(--text-muted);white-space:nowrap}
+    .hpx-lead .meta{font-size:13px;color:var(--text-body);margin-top:4px}
+    .hpx-lead .msg{font-size:13px;color:var(--text-muted);margin-top:6px;font-style:italic}
+    .empty{text-align:center;color:var(--text-muted);padding:30px 0;font-size:14px}
+    .toast{position:fixed;top:16px;left:50%;transform:translateX(-50%) translateY(-80px);background:var(--navy);color:#fff;padding:11px 20px;border-radius:10px;font-size:14px;font-weight:600;z-index:50;box-shadow:var(--shadow);transition:transform .3s;opacity:0}
+    .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+    @media (max-width:1100px){.preview{display:none}}
+    @media (max-width:680px){.sidebar{width:64px}.navbtn{font-size:0;padding:12px 0;text-align:center}.navbtn .count{display:none}.editor{padding:18px 16px}.hpx-row{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+
+  <!-- LOGIN -->
+  <div id="login">
+    <div class="login-card">
+      <div class="logo"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+      <h1>Horizon CMS</h1>
+      <p>Sign in to manage your website content.</p>
+      <form onsubmit="return ADM.login(event)">
+        <div class="hpx-field"><input type="password" id="pw" placeholder="Password" autocomplete="current-password" required></div>
+        <button class="hpx-btn hpx-btn-primary hpx-btn-block" type="submit">Sign In</button>
+        <div class="login-err" id="loginErr">Incorrect password. Please try again.</div>
+      </form>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="app">
+    <div class="topbar">
+      <div class="brand"><span class="dot">H</span> Horizon CMS</div>
+      <div class="actions">
+        <button class="hpx-btn hpx-btn-light" onclick="ADM.togglePreview()" id="previewBtn">Hide Preview</button>
+        <a class="hpx-btn hpx-btn-light" href="index.html" target="_blank" rel="noopener">Open Live Site ↗</a>
+        <button class="hpx-btn hpx-btn-primary" onclick="ADM.go('publish')">Export &amp; Publish</button>
+        <button class="hpx-btn hpx-btn-light" onclick="ADM.logout()">Log out</button>
+      </div>
+    </div>
+    <div class="layout">
+      <nav class="sidebar" id="sidebar"></nav>
+      <div class="main">
+        <div class="editor" id="editor"></div>
+        <div class="preview" id="preview">
+          <div class="ph"><span>Live preview</span><button class="hpx-icobtn" title="Refresh" onclick="ADM.reloadPreview()">⟳</button></div>
+          <iframe id="previewFrame" src="index.html" title="Preview"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="cms-shared.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

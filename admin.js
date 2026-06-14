@@ -134,7 +134,11 @@
     return h + "</div>";
   }
   function renderSectionEditor(ed, sec) {
-    work[sec] = effSection(sec);
+    work[sec] = effSection(sec);   // initialise working copy from saved/default
+    drawSection(sec);
+  }
+  function drawSection(sec) {
+    var ed = $("#editor");
     var sch = C.SCHEMA[sec], titlePlural = sch.title + "s";
     var html = '<h2>' + esc(titlePlural) + '</h2><div class="sub">Add, remove, reorder or edit each ' + esc(sch.title.toLowerCase()) + ', then Save.</div>';
     work[sec].forEach(function (item, i) {
@@ -159,16 +163,15 @@
       work[sec][i][key] = el.value;
     });
   }
-  function itemAdd(sec) { syncEditor(sec); work[sec].push(copy(C.SCHEMA[sec].blank)); renderSectionEditor($("#editor"), sec); reRenderSame(sec); }
-  function itemDel(sec, i) { if (!confirm("Delete this item?")) return; syncEditor(sec); work[sec].splice(i, 1); renderSectionEditor($("#editor"), sec); reRenderSame(sec); }
-  function itemMove(sec, i, d) { syncEditor(sec); var j = i + d; if (j < 0 || j >= work[sec].length) return; var t = work[sec][i]; work[sec][i] = work[sec][j]; work[sec][j] = t; renderSectionEditor($("#editor"), sec); reRenderSame(sec); }
+  function itemAdd(sec) { if (!work[sec]) work[sec] = effSection(sec); syncEditor(sec); work[sec].push(copy(C.SCHEMA[sec].blank)); drawSection(sec); }
+  function itemDel(sec, i) { if (!confirm("Delete this item?")) return; syncEditor(sec); work[sec].splice(i, 1); drawSection(sec); }
+  function itemMove(sec, i, d) { syncEditor(sec); var j = i + d; if (j < 0 || j >= work[sec].length) return; var t = work[sec][i]; work[sec][i] = work[sec][j]; work[sec][j] = t; drawSection(sec); }
   function itemImg(sec, i, key, ev) {
     syncEditor(sec);
-    if (ev == null) { work[sec][i][key] = ""; renderSectionEditor($("#editor"), sec); reRenderSame(sec); return; }
+    if (ev == null) { work[sec][i][key] = ""; drawSection(sec); return; }
     var f = ev.target.files[0]; if (!f) return;
-    var rd = new FileReader(); rd.onload = function () { work[sec][i][key] = rd.result; renderSectionEditor($("#editor"), sec); reRenderSame(sec); }; rd.readAsDataURL(f);
+    var rd = new FileReader(); rd.onload = function () { work[sec][i][key] = rd.result; drawSection(sec); }; rd.readAsDataURL(f);
   }
-  function reRenderSame() { /* editor already re-rendered by caller; keeps work intact */ }
   function saveSection(sec) { syncEditor(sec); content.sections[sec] = copy(work[sec]); persist(); reloadPreview(); buildSidebar(); toast(C.SCHEMA[sec].title + "s saved"); }
 
   /* ════════ CONTACT ════════ */

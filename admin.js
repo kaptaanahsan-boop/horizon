@@ -181,14 +181,16 @@
       '<div class="hpx-field"><label>Address (use commas; line breaks added automatically)</label><input id="ct_address" value="' + escAttr((cv("address") || "").replace(/<br\s*\/?>/gi, ", ")) + '"></div>' +
       '<div class="hpx-field"><label>Office hours</label><input id="ct_hours" value="' + escAttr(cv("hours")) + '"></div>' +
       '<div class="group-h">Social links</div>' +
+      '<p class="hpx-note" style="margin:-6px 0 12px;">LinkedIn and Instagram appear in the band above the footer. Leave a field blank to hide that button.</p>' +
       '<div class="hpx-field"><label>LinkedIn URL</label><input id="so_linkedin" value="' + escAttr(s.linkedin || "") + '" placeholder="https://linkedin.com/company/…"></div>' +
+      '<div class="hpx-field"><label>Instagram URL</label><input id="so_instagram" value="' + escAttr(s.instagram || "") + '" placeholder="https://instagram.com/…"></div>' +
       '<div class="hpx-field"><label>Facebook URL</label><input id="so_facebook" value="' + escAttr(s.facebook || "") + '" placeholder="https://facebook.com/…"></div>' +
       '<div class="hpx-field"><label>X / Twitter URL</label><input id="so_twitter" value="' + escAttr(s.twitter || "") + '" placeholder="https://x.com/…"></div>' +
       '<div class="hpx-savebar"><button class="hpx-btn hpx-btn-primary" onclick="ADM.saveContact()">Save Contact Info</button></div>';
   }
   function saveContact() {
     content.contact = { phone: $("#ct_phone").value, email: $("#ct_email").value, hours: $("#ct_hours").value, address: ($("#ct_address").value || "").replace(/\s*,\s*/g, "<br>") };
-    content.social = { linkedin: $("#so_linkedin").value.trim(), facebook: $("#so_facebook").value.trim(), twitter: $("#so_twitter").value.trim() };
+    content.social = { linkedin: $("#so_linkedin").value.trim(), instagram: $("#so_instagram").value.trim(), facebook: $("#so_facebook").value.trim(), twitter: $("#so_twitter").value.trim() };
     persist(); reloadPreview(); toast("Contact info saved");
   }
 

@@ -35,6 +35,7 @@
   };
   var LI_SVG = '<svg viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>';
   var QUOTE_SVG = '<svg viewBox="0 0 24 24"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></svg>';
+  var INSTA_SVG = '<svg viewBox="0 0 24 24"><path d="M12 2c2.717 0 3.056.01 4.122.06 1.065.05 1.79.217 2.428.465.66.254 1.216.598 1.772 1.153a4.908 4.908 0 0 1 1.153 1.772c.247.637.415 1.363.465 2.428.047 1.066.06 1.405.06 4.122 0 2.717-.01 3.056-.06 4.122-.05 1.065-.218 1.79-.465 2.428a4.883 4.883 0 0 1-1.153 1.772 4.915 4.915 0 0 1-1.772 1.153c-.637.247-1.363.415-2.428.465-1.066.047-1.405.06-4.122.06-2.717 0-3.056-.01-4.122-.06-1.065-.05-1.79-.218-2.428-.465a4.89 4.89 0 0 1-1.772-1.153 4.904 4.904 0 0 1-1.153-1.772c-.248-.637-.415-1.363-.465-2.428C2.013 15.056 2 14.717 2 12c0-2.717.01-3.056.06-4.122.05-1.066.217-1.79.465-2.428a4.88 4.88 0 0 1 1.153-1.772A4.897 4.897 0 0 1 5.45 2.525c.638-.248 1.362-.415 2.428-.465C8.944 2.013 9.283 2 12 2zm0 1.802c-2.67 0-2.986.01-4.04.058-.976.045-1.505.207-1.858.344-.466.182-.8.398-1.15.748-.35.35-.566.684-.748 1.15-.137.353-.3.882-.344 1.857-.048 1.055-.058 1.37-.058 4.041 0 2.67.01 2.986.058 4.04.045.977.207 1.505.344 1.858.182.466.399.8.748 1.15.35.35.684.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058 2.67 0 2.987-.01 4.04-.058.977-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.684.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041 0-2.67-.01-2.986-.058-4.04-.045-.977-.207-1.505-.344-1.858a3.097 3.097 0 0 0-.748-1.15 3.098 3.098 0 0 0-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.055-.048-1.37-.058-4.041-.058zm0 3.063a5.135 5.135 0 1 1 0 10.27 5.135 5.135 0 0 1 0-10.27zm0 8.468a3.333 3.333 0 1 0 0-6.666 3.333 3.333 0 0 0 0 6.666zm6.538-8.671a1.2 1.2 0 1 1-2.4 0 1.2 1.2 0 0 1 2.4 0z"/></svg>';
   var BLOG_FALLBACK = '<div class="blog-img-fallback"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>';
 
   var BLOG_DEFAULTS = [
@@ -116,8 +117,8 @@
                     blank: { num: "00", title: "New reason", desc: "Why this matters." } },
     process:      { title: "Step", grid: "processSteps", fields: [ ["emoji", "Emoji/Icon", "text"], ["badge", "Badge (e.g. Step 01)", "text"], ["title", "Title", "text"], ["desc", "Description", "textarea"] ],
                     blank: { emoji: "✅", badge: "Step", title: "New step", desc: "What happens here." } },
-    team:         { title: "Member", grid: "teamGrid", fields: [ ["photo", "Photo", "image"], ["name", "Name", "text"], ["title", "Title", "text"], ["badge", "Badge (e.g. CEO)", "text"], ["bio", "Biography", "textarea"], ["linkedin", "LinkedIn URL", "text"] ],
-                    blank: { photo: "", name: "New Member", title: "Title", badge: "Team", bio: "Short biography.", linkedin: "" } },
+    team:         { title: "Member", grid: "teamGrid", fields: [ ["photo", "Photo", "image"], ["name", "Name", "text"], ["title", "Title", "text"], ["badge", "Badge (e.g. CEO)", "text"], ["bio", "Biography", "textarea"], ["linkedin", "LinkedIn URL", "text"], ["instagram", "Instagram URL", "text"] ],
+                    blank: { photo: "", name: "New Member", title: "Title", badge: "Team", bio: "Short biography.", linkedin: "", instagram: "" } },
     testimonials: { title: "Review", grid: "testiGrid", fields: [ ["rating", "Star rating", "rating"], ["text", "Testimonial", "textarea"], ["name", "Client name", "text"], ["spec", "Specialty / location", "text"], ["avatar", "Avatar initials", "text"] ],
                     blank: { rating: 5, text: "Their experience…", name: "Client name", spec: "Specialty · State", avatar: "AB" } },
     faq:          { title: "Question", grid: "faqWrap", fields: [ ["q", "Question", "text"], ["a", "Answer", "textarea"] ],
@@ -142,10 +143,13 @@
         '</div></div><div class="step-body"><div class="step-icon">' + esc(s.emoji) + '</div><div class="step-num-badge">' + esc(s.badge) +
         '</div><div class="step-title">' + esc(s.title) + '</div><p class="step-desc">' + esc(s.desc) + '</p></div></div>'; }).join(""); },
     team: function (arr) { return arr.map(function (s) {
-      var li = (s.linkedin && s.linkedin !== "#") ? '<a class="team-linkedin" href="' + escAttr(s.linkedin) + '" target="_blank" rel="noopener">' + LI_SVG + ' Connect on LinkedIn</a>' : "";
+      var socs = "";
+      if (s.linkedin && s.linkedin !== "#") socs += '<a class="tsoc team-li" href="' + escAttr(s.linkedin) + '" target="_blank" rel="noopener" aria-label="LinkedIn">' + LI_SVG + '</a>';
+      if (s.instagram && s.instagram !== "#") socs += '<a class="tsoc team-ig" href="' + escAttr(s.instagram) + '" target="_blank" rel="noopener" aria-label="Instagram">' + INSTA_SVG + '</a>';
+      var socWrap = socs ? '<div class="team-socials">' + socs + '</div>' : "";
       return '<div class="team-card"><div class="team-photo-wrap"><div class="team-photo-badge">' + esc(s.badge) +
         '</div><img src="' + escAttr(s.photo) + '" alt="' + escAttr(s.name) + '"></div><div class="team-card-body"><div class="team-name">' +
-        esc(s.name) + '</div><div class="team-title">' + esc(s.title) + '</div><p class="team-bio">' + esc(s.bio) + '</p>' + li + '</div></div>'; }).join(""); },
+        esc(s.name) + '</div><div class="team-title">' + esc(s.title) + '</div><p class="team-bio">' + esc(s.bio) + '</p>' + socWrap + '</div></div>'; }).join(""); },
     testimonials: function (arr) { return arr.map(function (s) {
       return '<div class="testi-card"><div class="testi-quote-icon">' + QUOTE_SVG + '</div><div class="stars">' + stars(s.rating) +
         '</div><p class="testi-text">"' + esc(s.text) + '"</p><div class="testi-author"><div class="testi-avatar">' + esc(s.avatar) +
@@ -189,9 +193,10 @@
       return { emoji: tx(c.querySelector(".step-icon")), badge: tx(c.querySelector(".step-num-badge")), title: tx(c.querySelector(".step-title")), desc: tx(c.querySelector(".step-desc")) };
     });
     d.sections.team = qa("#teamGrid .team-card").map(function (c) {
-      var img = c.querySelector("img"), li = c.querySelector(".team-linkedin");
+      var img = c.querySelector("img"), li = c.querySelector(".team-li, .team-linkedin"), ig = c.querySelector(".team-ig");
+      function href(a) { var h = a ? (a.getAttribute("href") || "") : ""; return h === "#" ? "" : h; }
       return { photo: img ? img.getAttribute("src") : "", badge: tx(c.querySelector(".team-photo-badge")), name: tx(c.querySelector(".team-name")),
-               title: tx(c.querySelector(".team-title")), bio: tx(c.querySelector(".team-bio")), linkedin: li ? (li.getAttribute("href") || "") : "" };
+               title: tx(c.querySelector(".team-title")), bio: tx(c.querySelector(".team-bio")), linkedin: href(li), instagram: href(ig) };
     });
     d.sections.testimonials = qa("#testiGrid .testi-card").map(function (c) {
       return { rating: 5, text: tx(c.querySelector(".testi-text")).replace(/^["“]|["”]$/g, ""), name: tx(c.querySelector(".testi-name")),
@@ -208,7 +213,7 @@
       hours: tx(q('[data-c="hours"]')) || "Mon – Fri, 8 AM – 6 PM EST",
       address: (q('[data-c="address"]') ? q('[data-c="address"]').innerHTML.trim() : "") || "[City, State, ZIP]<br>United States"
     };
-    d.social = { linkedin: "", facebook: "", twitter: "" };
+    d.social = { linkedin: "", instagram: "", facebook: "", twitter: "" };
     var logo = q(".nav-logo img");
     d.brand = { navy: "#0B1F4B", teal: "#0E9A8C", logo: "", company: "Horizon Physician Services LLC" };
     d.logoSrc = logo ? logo.getAttribute("src") : "logo.png";
@@ -217,7 +222,7 @@
 
   window.HPXCMS = {
     esc: esc, escAttr: escAttr, copy: copy, shade: shade, stars: stars,
-    ICONS: ICONS, LI_SVG: LI_SVG, QUOTE_SVG: QUOTE_SVG, BLOG_FALLBACK: BLOG_FALLBACK, BLOG_DEFAULTS: BLOG_DEFAULTS,
+    ICONS: ICONS, LI_SVG: LI_SVG, INSTA_SVG: INSTA_SVG, QUOTE_SVG: QUOTE_SVG, BLOG_FALLBACK: BLOG_FALLBACK, BLOG_DEFAULTS: BLOG_DEFAULTS,
     TEXTMAP: TEXTMAP, SCHEMA: SCHEMA, SECTION_ORDER: SECTION_ORDER, T: T, scrape: scrape,
     LS_CONTENT: "hpx_content_v2", LS_LEADS: "hpx_leads_v1", DEFAULT_PW: "horizon2026"
   };

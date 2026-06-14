@@ -44,7 +44,16 @@
     $all('[data-c="address"]').forEach(function (e) { e.innerHTML = cVal("address"); });
     var mail = $("[data-cta-mail]"); if (mail) mail.setAttribute("href", "mailto:" + cVal("email"));
     var tel = $("[data-cta-tel]"); if (tel) tel.setAttribute("href", "tel:" + String(cVal("phone")).replace(/[^\d+]/g, ""));
-    ["linkedin", "facebook", "twitter"].forEach(function (k) { var el = $('[data-s="' + k + '"]'); if (el) el.setAttribute("href", sVal(k) || "#"); });
+    // company social buttons: set href when a URL exists, hide when empty
+    ["linkedin", "instagram", "facebook", "twitter"].forEach(function (k) {
+      var v = sVal(k);
+      $all('[data-s="' + k + '"]').forEach(function (el) { if (v) { el.setAttribute("href", v); el.style.display = ""; } else { el.style.display = "none"; } });
+    });
+    var strip = $("#social-strip");
+    if (strip) { var any = ["linkedin", "instagram", "facebook", "twitter"].some(function (k) { return sVal(k); }); strip.style.display = any ? "" : "none"; }
+    // hide placeholder team social buttons with no real URL (static defaults)
+    $all(".team-socials .tsoc").forEach(function (a) { var h = a.getAttribute("href"); if (!h || h === "#") a.style.display = "none"; });
+    $all(".team-socials").forEach(function (w) { var vis = $all(".tsoc", w).some(function (a) { return a.style.display !== "none"; }); w.style.display = vis ? "" : "none"; });
   }
   function applyBrand() {
     var b = content.brand || {}, root = document.documentElement.style;

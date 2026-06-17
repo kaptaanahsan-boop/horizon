@@ -62,6 +62,10 @@
     { g: "Hero", k: "trust3", label: "Trust badge 3", sel: "#hero .hero-trust .trust-item:nth-child(3) span", type: "text" },
     { g: "Hero", k: "trust4", label: "Trust badge 4", sel: "#hero .hero-trust .trust-item:nth-child(4) span", type: "text" },
 
+    { g: "BPO", k: "bpo_label", label: "Eyebrow label", sel: "#bpo .section-header .label", type: "text" },
+    { g: "BPO", k: "bpo_h2", label: "Heading", sel: "#bpo .section-header h2", type: "text" },
+    { g: "BPO", k: "bpo_lead", label: "Intro paragraph", sel: "#bpo .section-header .text-lead", type: "textarea" },
+
     { g: "Services", k: "services_label", label: "Eyebrow label", sel: "#services .section-header .label", type: "text" },
     { g: "Services", k: "services_h2", label: "Heading", sel: "#services .section-header h2", type: "text" },
     { g: "Services", k: "services_lead", label: "Intro paragraph", sel: "#services .section-header .text-lead", type: "textarea" },
@@ -111,6 +115,8 @@
   var SCHEMA = {
     stats:        { title: "Stat", grid: "statsGrid", fields: [ ["value", "Value (e.g. 10, 1M, 95)", "text"], ["suffix", "Suffix (+, %)", "text"], ["label", "Label", "text"], ["sublabel", "Sub-label", "text"] ],
                     blank: { value: "0", suffix: "+", label: "New stat", sublabel: "" } },
+    bpo:          { title: "BPO Service", grid: "bpoGrid", fields: [ ["icon", "Icon", "icon"], ["title", "Title", "text"], ["desc", "Description", "textarea"] ],
+                    blank: { icon: ICONS["Phone"], title: "New BPO Service", desc: "Describe this service." } },
     services:     { title: "Service", grid: "servicesGrid", fields: [ ["icon", "Icon", "icon"], ["title", "Title", "text"], ["desc", "Description", "textarea"] ],
                     blank: { icon: ICONS["Check"], title: "New Service", desc: "Describe this service." } },
     why:          { title: "Reason", grid: "whyGrid", fields: [ ["num", "Number badge", "text"], ["title", "Title", "text"], ["desc", "Description", "textarea"] ],
@@ -126,7 +132,7 @@
     blog:         { title: "Post", grid: "blogGrid", fields: [ ["image", "Cover image", "image"], ["title", "Title", "text"], ["tag", "Category tag", "text"], ["date", "Date", "text"], ["author", "Author", "text"], ["excerpt", "Excerpt (card preview)", "textarea"], ["body", "Full article", "bigtext"] ],
                     blank: { image: "", title: "New Post", tag: "Article", date: "", author: "Horizon Team", excerpt: "Short summary.", body: "Write your article here.\n\nUse blank lines between paragraphs." } }
   };
-  var SECTION_ORDER = ["stats", "services", "why", "process", "team", "testimonials", "faq", "blog"];
+  var SECTION_ORDER = ["stats", "bpo", "services", "why", "process", "team", "testimonials", "faq", "blog"];
 
   /* ════════ HTML TEMPLATE BUILDERS (return strings) ════════ */
   var T = {
@@ -134,6 +140,9 @@
       return '<div class="stat-card"><div class="num"><span>' + esc(s.value) + '</span>' + esc(s.suffix) +
         '</div><div class="lbl">' + esc(s.label) + '</div><div class="sublbl">' + esc(s.sublabel) + '</div></div>'; }).join(""); },
     services: function (arr) { return arr.map(function (s) {
+      return '<div class="service-card"><div class="service-icon">' + (s.icon || "") + '</div><h3>' + esc(s.title) +
+        '</h3><p>' + esc(s.desc) + '</p><a class="link-btn" href="#">Learn More</a></div>'; }).join(""); },
+    bpo: function (arr) { return arr.map(function (s) {
       return '<div class="service-card"><div class="service-icon">' + (s.icon || "") + '</div><h3>' + esc(s.title) +
         '</h3><p>' + esc(s.desc) + '</p><a class="link-btn" href="#">Learn More</a></div>'; }).join(""); },
     why: function (arr) { return arr.map(function (s) {
@@ -182,6 +191,9 @@
       var span = c.querySelector(".num span"), num = c.querySelector(".num");
       var suffix = num ? num.textContent.replace(span ? span.textContent : "", "").trim() : "";
       return { value: span ? span.textContent.trim() : "", suffix: suffix, label: tx(c.querySelector(".lbl")), sublabel: tx(c.querySelector(".sublbl")) };
+    });
+    d.sections.bpo = qa("#bpoGrid .service-card").map(function (c) {
+      return { icon: (c.querySelector(".service-icon") || {}).innerHTML || "", title: tx(c.querySelector("h3")), desc: tx(c.querySelector("p")) };
     });
     d.sections.services = qa("#servicesGrid .service-card").map(function (c) {
       return { icon: (c.querySelector(".service-icon") || {}).innerHTML || "", title: tx(c.querySelector("h3")), desc: tx(c.querySelector("p")) };

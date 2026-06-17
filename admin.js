@@ -66,7 +66,7 @@
 
   /* ════════ SIDEBAR ════════ */
   var NAV = [
-    ["text", "Pages & Text"], ["stats", "Stats"], ["services", "Services"], ["why", "Why Us"],
+    ["text", "Pages & Text"], ["stats", "Stats"], ["bpo", "BPO"], ["services", "Services"], ["why", "Why Us"],
     ["process", "Process"], ["team", "Team"], ["testimonials", "Reviews"], ["faq", "FAQ"],
     ["blog", "Blog"], ["contact", "Contact"], ["brand", "Branding"], ["leads", "Leads"], ["publish", "Publish"]
   ];

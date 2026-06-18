@@ -18,6 +18,18 @@
     return "#" + (1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1);
   }
   function stars(r) { var h = ""; r = +r || 5; for (var s = 1; s <= 5; s++) h += '<span class="star" style="opacity:' + (s <= r ? 1 : .25) + '">★</span>'; return h; }
+  function serviceUrl(title) {
+    var t = String(title || "").toLowerCase();
+    if (/personal injury|workers/.test(t)) return "personal-injury-billing.html";
+    if (/coding/.test(t)) return "medical-coding.html";
+    if (/denial/.test(t)) return "denial-management.html";
+    if (/insurance follow|follow-up|follow up/.test(t)) return "insurance-follow-up.html";
+    if (/accounts receivable|(^|[^a-z])ar([^a-z]|$)|a\/r/.test(t)) return "ar-management.html";
+    if (/collections/.test(t)) return "collections-support.html";
+    if (/revenue cycle/.test(t)) return "revenue-cycle-management.html";
+    if (/billing/.test(t)) return "medical-billing.html";
+    return "";
+  }
 
   var ICONS = {
     "File / Billing": '<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>',
@@ -140,11 +152,12 @@
       return '<div class="stat-card"><div class="num"><span>' + esc(s.value) + '</span>' + esc(s.suffix) +
         '</div><div class="lbl">' + esc(s.label) + '</div><div class="sublbl">' + esc(s.sublabel) + '</div></div>'; }).join(""); },
     services: function (arr) { return arr.map(function (s) {
+      var url = serviceUrl(s.title);
       return '<div class="service-card"><div class="service-icon">' + (s.icon || "") + '</div><h3>' + esc(s.title) +
-        '</h3><p>' + esc(s.desc) + '</p><a class="link-btn" href="#">Learn More</a></div>'; }).join(""); },
+        '</h3><p>' + esc(s.desc) + '</p><a class="link-btn" href="' + (url || "#") + '">Learn More</a></div>'; }).join(""); },
     bpo: function (arr) { return arr.map(function (s) {
       return '<div class="service-card"><div class="service-icon">' + (s.icon || "") + '</div><h3>' + esc(s.title) +
-        '</h3><p>' + esc(s.desc) + '</p><a class="link-btn" href="#">Learn More</a></div>'; }).join(""); },
+        '</h3><p>' + esc(s.desc) + '</p><a class="link-btn" href="bpo-call-center.html">Learn More</a></div>'; }).join(""); },
     why: function (arr) { return arr.map(function (s) {
       return '<div class="why-card"><div class="why-num">' + esc(s.num) + '</div><h3>' + esc(s.title) + '</h3><p>' + esc(s.desc) + '</p></div>'; }).join(""); },
     process: function (arr) { return arr.map(function (s, i) {

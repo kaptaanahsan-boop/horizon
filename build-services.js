@@ -313,7 +313,17 @@ function navHtml(active){
   return `<nav id="navbar"><div class="nav-inner">
     <a class="nav-logo" href="index.html"><img src="logo.png" alt="Horizon Physician Services LLC"></a>
     <div class="nav-links">
-      <a href="index.html#bpo">BPO</a>
+      <div class="nav-dd">
+        <a href="index.html#bpo" class="nav-dd-trigger">BPO <span class="caret">▼</span></a>
+        <div class="nav-dd-menu">
+          <a href="bpo-call-center.html">Inbound Calls</a>
+          <a href="bpo-call-center.html">Outbound Calls</a>
+          <a href="bpo-call-center.html">Email &amp; Chat Support</a>
+          <a href="bpo-call-center.html">SMS Support</a>
+          <div class="dd-divider"></div>
+          <a href="bpo-call-center.html" class="dd-all">BPO &amp; Call Center →</a>
+        </div>
+      </div>
       <div class="nav-dd">
         <a href="index.html#services" class="nav-dd-trigger">Services <span class="caret">▼</span></a>
         <div class="nav-dd-menu">
@@ -322,8 +332,25 @@ function navHtml(active){
           <a href="index.html#services" class="dd-all">View all services →</a>
         </div>
       </div>
-      <a href="index.html#about">About</a>
-      <a href="index.html#process">Our Process</a>
+      <div class="nav-dd">
+        <a href="index.html#about" class="nav-dd-trigger">About <span class="caret">▼</span></a>
+        <div class="nav-dd-menu">
+          <a href="index.html#about">About Us</a>
+          <a href="index.html#about">Mission, Vision &amp; Values</a>
+          <a href="index.html#why">Why Choose Us</a>
+          <a href="index.html#leadership">Our Leadership</a>
+        </div>
+      </div>
+      <div class="nav-dd">
+        <a href="index.html#process" class="nav-dd-trigger">Our Process <span class="caret">▼</span></a>
+        <div class="nav-dd-menu">
+          <a href="index.html#pstep0">1. Patient &amp; Claim Review</a>
+          <a href="index.html#pstep1">2. Coding &amp; Submission</a>
+          <a href="index.html#pstep2">3. Insurance Follow-Up</a>
+          <a href="index.html#pstep3">4. AR &amp; Denial Management</a>
+          <a href="index.html#pstep4">5. Revenue Recovery &amp; Reporting</a>
+        </div>
+      </div>
       <a href="index.html#leadership">Leadership</a>
       <a href="index.html#blog">Blog</a>
       <a href="index.html#faq">FAQ</a>

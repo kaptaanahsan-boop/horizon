@@ -247,12 +247,21 @@
   /* ════════ PUBLISH ════════ */
   function renderPublish(ed) {
     ed.innerHTML = '<h2>Export &amp; Publish</h2><div class="sub">Make your edits permanent for all visitors.</div>' +
-      '<div class="hpx-callout"><strong>How to publish.</strong> Edits you Save appear instantly in the preview (this browser). To go live for everyone: ' +
-      '<strong>Export</strong> the content file, drop <code>content.json</code> into your project folder next to <code>index.html</code>, then push to your host.</div>' +
-      '<button class="hpx-btn hpx-btn-primary hpx-btn-block" style="margin-bottom:12px;" onclick="ADM.exportContent()">⬇ Export content.json</button>' +
-      '<div class="hpx-field"><label>Import a content file</label><input type="file" accept="application/json,.json" onchange="ADM.importContent(event)"></div>' +
+      '<div class="hpx-callout"><strong>Easiest way to publish.</strong> Click <strong>Copy JSON</strong> below, then in Terminal run:<br>' +
+      '<code>cd "your project folder" &amp;&amp; pbpaste &gt; content.json &amp;&amp; git add content.json &amp;&amp; git commit -m "publish" &amp;&amp; git push</code></div>' +
+      '<button class="hpx-btn hpx-btn-primary hpx-btn-block" style="margin-bottom:10px;" onclick="ADM.copyContent()">📋 Copy JSON to clipboard</button>' +
+      '<button class="hpx-btn hpx-btn-ghost hpx-btn-block" style="margin-bottom:12px;" onclick="ADM.exportContent()">⬇ Or download content.json file</button>' +
+      '<textarea id="pubJson" readonly rows="6" style="font-family:monospace;font-size:12px;" onclick="this.select()">' + esc(JSON.stringify(content)) + '</textarea>' +
+      '<div class="hpx-field" style="margin-top:14px;"><label>Import a content file</label><input type="file" accept="application/json,.json" onchange="ADM.importContent(event)"></div>' +
       '<div class="group-h">Danger zone</div>' +
       '<button class="hpx-btn hpx-btn-danger hpx-btn-block" onclick="ADM.resetAll()">Reset all content to original</button>';
+  }
+  function copyContent() {
+    var txt = JSON.stringify(content, null, 2);
+    function ok() { toast("Copied! Now run  pbpaste > content.json"); }
+    if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(txt).then(ok, fallback); }
+    else fallback();
+    function fallback() { var ta = $("#pubJson"); if (ta) { ta.select(); try { document.execCommand("copy"); ok(); } catch (e) { toast("Press Cmd+C to copy"); } } }
   }
   function download(data, name, type) { var blob = new Blob([data], { type: type || "application/json" }), a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name; a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000); }
   function exportContent() { download(JSON.stringify(content, null, 2), "content.json", "application/json"); toast("content.json exported"); }
@@ -278,7 +287,7 @@
     login: login, logout: logout, go: go, saveText: saveText,
     itemAdd: itemAdd, itemDel: itemDel, itemMove: itemMove, itemImg: itemImg, saveSection: saveSection,
     saveContact: saveContact, saveBrand: saveBrand, resetColors: resetColors, uploadLogo: uploadLogo,
-    exportLeads: exportLeads, clearLeads: clearLeads, exportContent: exportContent, importContent: importContent, resetAll: resetAll,
+    exportLeads: exportLeads, clearLeads: clearLeads, exportContent: exportContent, copyContent: copyContent, importContent: importContent, resetAll: resetAll,
     togglePreview: togglePreview, reloadPreview: reloadPreview
   };
 

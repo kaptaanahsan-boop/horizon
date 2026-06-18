@@ -7,6 +7,8 @@ const OUT = __dirname; // write pages next to index.html
 const ORIGIN = "https://horizonphysician.com";
 const PHONE = "+92 319 1385894";
 const EMAIL = "info@horizonphysicianservices.com";
+const GA_ID = "G-7LPHZ4JH6Z";
+const GA_TAG = `<script async src="https://www.googletagmanager.com/gtag/js?id=${GA_ID}"></script>\n<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_ID}');</script>`;
 
 const ICON = {
   doc: '<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>',
@@ -416,6 +418,7 @@ function render(svc){
 <meta property="og:url" content="${url}">
 <meta property="og:image" content="${ORIGIN}/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
+${GA_TAG}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">

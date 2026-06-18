@@ -106,6 +106,7 @@
     ["name", "practice", "email", "phone", "interest", "message"].forEach(function (k) { d[k] = (f.elements[k] ? f.elements[k].value : "").trim(); });
     d.date = new Date().toISOString();
     var list = leads(); list.unshift(d); saveLS(C.LS_LEADS, list);
+    if (typeof window.gtag === "function") window.gtag("event", "generate_lead", { method: "consultation_form", interest: d.interest || "" });
     f.reset(); f.style.display = "none"; var s = $("#hpxConsultSuccess"); if (s) s.style.display = "block"; return false;
   }
   function wireCTAs() {

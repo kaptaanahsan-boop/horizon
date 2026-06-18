@@ -38,8 +38,9 @@ function head(title, desc, url, image, type, extraSchema) {
 ${bs.GA_TAG}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="service.css?v=3">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap"></noscript>
+<link rel="stylesheet" href="service.css?v=4">
 ${extraSchema ? '<script type="application/ld+json">' + JSON.stringify(extraSchema) + "</script>" : ""}`;
 }
 function imgFull(im) { return im ? (im.indexOf("http") === 0 ? im : ORIGIN + "/" + im) : ORIGIN + "/og-image.png"; }

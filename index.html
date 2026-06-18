@@ -40,7 +40,8 @@
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" /></noscript>
 
   <style>
     /* ─── CSS Variables ─────────────────────────────────────────── */
@@ -62,7 +63,7 @@
       --gray-800:   #253050;
       --text-dark:  #0D1B36;
       --text-body:  #3D4F6E;
-      --text-muted: #7585A2;
+      --text-muted: #5E6C88;
       --shadow-sm:  0 1px 3px rgba(11,31,75,.06);
       --shadow-md:  0 4px 16px rgba(11,31,75,.10);
       --shadow-lg:  0 12px 40px rgba(11,31,75,.14);
@@ -2805,7 +2806,7 @@
 
   </script>
 
-  <script src="cms-shared.js?v=6"></script>
+  <script src="cms-shared.js?v=7"></script>
   <script src="site.js?v=4"></script>
 
 </body>

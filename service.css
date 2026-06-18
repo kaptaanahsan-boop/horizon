@@ -3,7 +3,7 @@
   --navy:#0B1F4B;--navy-dark:#07152F;--navy-mid:#122460;--teal:#0E9A8C;--teal-dark:#0A7A6F;
   --teal-light:#12C0B0;--teal-pale:#E8F8F7;--white:#fff;--off-white:#F7F9FC;--gray-50:#F0F4FA;
   --gray-100:#E4EAF3;--gray-200:#C8D3E6;--gray-400:#8A9BBF;--gray-600:#536080;--gray-800:#253050;
-  --text-dark:#0D1B36;--text-body:#3D4F6E;--text-muted:#7585A2;
+  --text-dark:#0D1B36;--text-body:#3D4F6E;--text-muted:#5E6C88;
   --shadow-sm:0 1px 3px rgba(11,31,75,.06);--shadow-md:0 4px 16px rgba(11,31,75,.10);--shadow-lg:0 12px 40px rgba(11,31,75,.14);
   --radius-md:12px;--radius-lg:20px;--radius-xl:28px;--t:all .24s cubic-bezier(.4,0,.2,1);
 }

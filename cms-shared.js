@@ -155,10 +155,10 @@
     services: function (arr) { return arr.map(function (s) {
       var url = serviceUrl(s.title);
       return '<div class="service-card"><div class="service-icon">' + (s.icon || "") + '</div><h3>' + esc(s.title) +
-        '</h3><p>' + esc(s.desc) + '</p><a class="link-btn" href="' + (url || "#") + '">Learn More</a></div>'; }).join(""); },
+        '</h3><p>' + esc(s.desc) + '</p><a class="link-btn" href="' + (url || "#") + '" aria-label="Learn more about ' + escAttr(s.title) + '">Learn More</a></div>'; }).join(""); },
     bpo: function (arr) { return arr.map(function (s) {
       return '<div class="service-card"><div class="service-icon">' + (s.icon || "") + '</div><h3>' + esc(s.title) +
-        '</h3><p>' + esc(s.desc) + '</p><a class="link-btn" href="bpo-call-center.html">Learn More</a></div>'; }).join(""); },
+        '</h3><p>' + esc(s.desc) + '</p><a class="link-btn" href="bpo-call-center.html" aria-label="Learn more about ' + escAttr(s.title) + '">Learn More</a></div>'; }).join(""); },
     why: function (arr) { return arr.map(function (s) {
       return '<div class="why-card"><div class="why-num">' + esc(s.num) + '</div><h3>' + esc(s.title) + '</h3><p>' + esc(s.desc) + '</p></div>'; }).join(""); },
     process: function (arr) { return arr.map(function (s, i) {
@@ -184,11 +184,12 @@
         '><div class="faq-a-inner">' + esc(s.a) + '</div></div></div>'; }).join(""); },
     blog: function (arr) { return arr.map(function (p, i) {
       var url = "blog-" + slugify(p.title) + ".html";
-      var img = p.image ? '<a href="' + url + '"><img class="blog-img" src="' + escAttr(p.image) + '" alt="' + escAttr(p.title) + '" loading="lazy" decoding="async"></a>' : '<a href="' + url + '">' + BLOG_FALLBACK + '</a>';
+      var al = ' aria-label="' + escAttr(p.title) + '"';
+      var img = p.image ? '<a href="' + url + '"' + al + '><img class="blog-img" src="' + escAttr(p.image) + '" alt="' + escAttr(p.title) + '" loading="lazy" decoding="async"></a>' : '<a href="' + url + '"' + al + '>' + BLOG_FALLBACK + '</a>';
       return '<div class="blog-card">' + img + '<div class="blog-body"><span class="blog-tag">' + esc(p.tag || "Article") +
         '</span><h3><a href="' + url + '" style="color:inherit;">' + esc(p.title) + '</a></h3><p class="blog-excerpt">' + esc(p.excerpt) + '</p><div class="blog-meta"><span>' +
         esc(p.date) + '</span><span class="dot"></span><span>' + esc(p.author) + '</span></div>' +
-        '<a class="blog-readmore" href="' + url + '">Read article →</a></div></div>'; }).join(""); }
+        '<a class="blog-readmore" href="' + url + '" aria-label="Read article: ' + escAttr(p.title) + '">Read article →</a></div></div>'; }).join(""); }
   };
 
   /* ════════ SCRAPE DEFAULTS FROM A DOCUMENT ════════ */

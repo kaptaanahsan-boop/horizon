@@ -288,17 +288,32 @@
     var repo = ghRepo(), branch = ghBranch(), api = "https://api.github.com/repos/" + repo + "/contents/content.json";
     var b64 = btoa(unescape(encodeURIComponent(JSON.stringify(content, null, 2))));
     toast("Publishing…");
-    fetch(api + "?ref=" + encodeURIComponent(branch), { headers: ghHeaders() })
-      .then(function (r) { if (r.status === 404) return { sha: undefined }; if (!r.ok) return r.json().then(function (e) { throw e; }); return r.json(); })
-      .then(function (j) {
-        return fetch(api, { method: "PUT", headers: ghHeaders(), body: JSON.stringify({ message: "Publish content via admin", content: b64, sha: j.sha, branch: branch }) })
-          .then(function (r) { return r.json().then(function (jj) { if (!r.ok) throw jj; return jj; }); });
+    function getSha() {
+      // cache-buster + no-store so we always get the CURRENT file version id
+      return fetch(api + "?ref=" + encodeURIComponent(branch) + "&_=" + Date.now(), { headers: ghHeaders(), cache: "no-store" })
+        .then(function (r) { if (r.status === 404) return undefined; if (!r.ok) return r.json().then(function (e) { throw e; }); return r.json().then(function (j) { return j.sha; }); });
+    }
+    function put(sha) {
+      return fetch(api, { method: "PUT", headers: ghHeaders(), body: JSON.stringify({ message: "Publish content via admin", content: b64, sha: sha, branch: branch }) })
+        .then(function (r) { return r.json().then(function (jj) { return { ok: r.ok, status: r.status, body: jj }; }); });
+    }
+    getSha()
+      .then(function (sha) {
+        return put(sha).then(function (res) {
+          if (res.ok) return res;
+          // sha conflict (file changed since we read it) — refetch latest sha and retry once
+          if (res.status === 409 || res.status === 422 || /does not match|is at/i.test(JSON.stringify(res.body))) {
+            return getSha().then(function (sha2) { return put(sha2).then(function (r2) { if (!r2.ok) throw r2.body; return r2; }); });
+          }
+          throw res.body;
+        });
       })
       .then(function () { toast("✅ Published! Your site updates in about a minute."); })
       .catch(function (e) {
-        var msg = (e && e.message) || "Publish failed";
-        if (/bad credentials|requires authentication|401/i.test(JSON.stringify(e))) { localStorage.removeItem(GH_TOKEN); msg = "Token invalid or expired — click Publish to re-enter it."; }
-        else if (/not found/i.test(msg)) { msg = "Repo not found — check the Repository field (owner/name) and that the token can access it."; }
+        var s = JSON.stringify(e || {}), msg = (e && e.message) || "Publish failed";
+        if (/bad credentials|requires authentication|401/i.test(s)) { localStorage.removeItem(GH_TOKEN); msg = "Token invalid or expired — click Publish to re-enter it."; }
+        else if (/not found/i.test(s)) { msg = "Repo not found — check the Repository field (owner/name) and token access."; }
+        else if (/does not match|409|422/i.test(s)) { msg = "Sync conflict — please click Publish once more."; }
         toast("❌ " + msg); renderPublish($("#editor"));
       });
   }

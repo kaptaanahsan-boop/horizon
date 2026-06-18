@@ -185,6 +185,26 @@
     }
     .nav-links a:hover { color: var(--white); background: rgba(255,255,255,.07); }
 
+    /* nav dropdown */
+    .nav-dd { position: relative; }
+    .nav-dd-trigger { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; }
+    .nav-dd-trigger .caret { font-size: 9px; transition: transform .25s ease; opacity: .8; }
+    .nav-dd:hover .nav-dd-trigger .caret { transform: rotate(180deg); }
+    .nav-dd-menu {
+      position: absolute; top: calc(100% + 6px); left: 50%; transform: translateX(-50%) translateY(8px);
+      min-width: 250px; background: #fff; border-radius: 14px; box-shadow: 0 16px 44px rgba(11,31,75,.20);
+      padding: 8px; opacity: 0; visibility: hidden; transition: var(--transition); z-index: 200;
+    }
+    .nav-dd::before { content: ""; position: absolute; top: 100%; left: 0; right: 0; height: 12px; }
+    .nav-dd:hover .nav-dd-menu { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+    .nav-dd-menu a {
+      display: block; padding: 11px 14px; border-radius: 9px; color: var(--text-dark) !important;
+      font-size: 14px; font-weight: 500; white-space: nowrap; background: none;
+    }
+    .nav-dd-menu a:hover { background: var(--teal-pale); color: var(--teal-dark) !important; }
+    .nav-dd-menu .dd-divider { height: 1px; background: var(--gray-100); margin: 6px 8px; }
+    .nav-dd-menu .dd-all { color: var(--teal-dark) !important; font-weight: 700; }
+
     .nav-cta { margin-left: 12px; }
     .nav-cta .btn { padding: 10px 22px; font-size: 14px; }
 
@@ -1051,6 +1071,12 @@
     }
     .mobile-menu a:hover { background: rgba(255,255,255,.06); color: white; }
     .mobile-menu .btn { margin-top: 8px; width: 100%; justify-content: center; }
+    .mobile-menu .mm-heading {
+      font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+      color: var(--teal-light); padding: 14px 16px 6px; margin-top: 6px;
+      border-top: 1px solid rgba(255,255,255,.08);
+    }
+    .mobile-menu { max-height: calc(100vh - 70px); overflow-y: auto; }
 
     /* ─── Responsive ────────────────────────────────────────────── */
 
@@ -1490,7 +1516,22 @@
       </a>
       <div class="nav-links">
         <a href="#bpo">BPO</a>
-        <a href="#services">Services</a>
+        <div class="nav-dd">
+          <a href="#services" class="nav-dd-trigger">Services <span class="caret">▼</span></a>
+          <div class="nav-dd-menu">
+            <a href="medical-billing.html">Medical Billing</a>
+            <a href="medical-coding.html">Medical Coding</a>
+            <a href="ar-management.html">AR Management</a>
+            <a href="denial-management.html">Denial Management</a>
+            <a href="insurance-follow-up.html">Insurance Follow-Up</a>
+            <a href="collections-support.html">Collections Support</a>
+            <a href="personal-injury-billing.html">Personal Injury Billing</a>
+            <a href="revenue-cycle-management.html">Revenue Cycle Management</a>
+            <a href="bpo-call-center.html">BPO &amp; Call Center</a>
+            <div class="dd-divider"></div>
+            <a href="#services" class="dd-all">View all services →</a>
+          </div>
+        </div>
         <a href="#about">About</a>
         <a href="#process">Our Process</a>
         <a href="#leadership">Leadership</a>
@@ -1509,14 +1550,22 @@
 
   <!-- Mobile menu -->
   <div class="mobile-menu" id="mobileMenu">
-    <a href="#bpo" onclick="toggleMenu()">BPO</a>
-    <a href="#services" onclick="toggleMenu()">Services</a>
     <a href="#about" onclick="toggleMenu()">About</a>
     <a href="#process" onclick="toggleMenu()">Our Process</a>
     <a href="#leadership" onclick="toggleMenu()">Leadership</a>
     <a href="#testimonials" onclick="toggleMenu()">Testimonials</a>
     <a href="#blog" onclick="toggleMenu()">Blog</a>
     <a href="#faq" onclick="toggleMenu()">FAQ</a>
+    <div class="mm-heading">Services</div>
+    <a href="medical-billing.html">Medical Billing</a>
+    <a href="medical-coding.html">Medical Coding</a>
+    <a href="ar-management.html">AR Management</a>
+    <a href="denial-management.html">Denial Management</a>
+    <a href="insurance-follow-up.html">Insurance Follow-Up</a>
+    <a href="collections-support.html">Collections Support</a>
+    <a href="personal-injury-billing.html">Personal Injury Billing</a>
+    <a href="revenue-cycle-management.html">Revenue Cycle Management</a>
+    <a href="bpo-call-center.html">BPO &amp; Call Center</a>
     <a class="btn btn-primary" href="#final-cta" onclick="toggleMenu()">Schedule Consultation</a>
   </div>
 

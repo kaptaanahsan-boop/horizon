@@ -306,12 +306,22 @@ const SERVICES = [
 
 function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
 
-function navHtml(){
+function navHtml(active){
+  var ddLinks = SERVICES.map(function(s){
+    return `<a href="${s.slug}.html"${s.slug===active?' class="dd-active"':''}>${esc(s.nav)}</a>`;
+  }).join("");
   return `<nav id="navbar"><div class="nav-inner">
     <a class="nav-logo" href="index.html"><img src="logo.png" alt="Horizon Physician Services LLC"></a>
     <div class="nav-links">
       <a href="index.html#bpo">BPO</a>
-      <a href="index.html#services">Services</a>
+      <div class="nav-dd">
+        <a href="index.html#services" class="nav-dd-trigger">Services <span class="caret">▼</span></a>
+        <div class="nav-dd-menu">
+          ${ddLinks}
+          <div class="dd-divider"></div>
+          <a href="index.html#services" class="dd-all">View all services →</a>
+        </div>
+      </div>
       <a href="index.html#about">About</a>
       <a href="index.html#process">Our Process</a>
       <a href="index.html#leadership">Leadership</a>
@@ -382,11 +392,11 @@ function render(svc){
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="service.css?v=1">
+<link rel="stylesheet" href="service.css?v=2">
 <script type="application/ld+json">${JSON.stringify([jsonld,breadcrumb,faqSchema])}</script>
 </head>
 <body>
-${navHtml()}
+${navHtml(svc.slug)}
 
 <header class="svc-hero"><div class="container">
   <div class="crumb"><a href="index.html">Home</a> &nbsp;/&nbsp; ${esc(svc.nav)}</div>

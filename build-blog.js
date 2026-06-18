@@ -64,7 +64,7 @@ function postPage(p, idx, all) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
-${head(p.title + " | Horizon Physician Services", p.excerpt, url, imgFull(p.image), "article", [article, crumb])}
+${head(p.title, p.excerpt, url, imgFull(p.image), "article", [article, crumb])}
 </head>
 <body>
 ${bs.navHtml()}
@@ -94,6 +94,13 @@ ${bs.footerHtml()}
 
 function indexPage(all) {
   var url = ORIGIN + "/blog.html";
+  var blogSchema = { "@context": "https://schema.org", "@type": "Blog", "name": "Horizon Physician Services Blog", "url": url,
+    "description": "Insights on medical billing, coding, denial management, and revenue cycle strategy for healthcare providers.",
+    "publisher": { "@type": "Organization", "name": "Horizon Physician Services LLC", "logo": { "@type": "ImageObject", "url": ORIGIN + "/logo.png" } },
+    "blogPost": all.map(function (p) { return { "@type": "BlogPosting", "headline": p.title, "url": ORIGIN + "/blog-" + slug(p) + ".html", "datePublished": isoDate(p.date) || undefined }; }) };
+  var crumb = { "@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": ORIGIN + "/" },
+    { "@type": "ListItem", "position": 2, "name": "Blog", "item": url } ] };
   var cards = all.map(function (p) {
     var s = slug(p);
     var img = p.image ? `<img class="blog-img" src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy" decoding="async">` : FALLBACK;
@@ -102,7 +109,7 @@ function indexPage(all) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
-${head("Blog | Medical Billing & RCM Insights | Horizon Physician Services", "Practical guidance on medical billing, coding, denial management, and revenue cycle strategy for healthcare providers.", url, ORIGIN + "/og-image.png", "website", null)}
+${head("Medical Billing & RCM Blog | Horizon Physician Services", "Practical guidance on medical billing, coding, denial management, and revenue cycle strategy for healthcare providers.", url, ORIGIN + "/og-image.png", "website", [blogSchema, crumb])}
 </head>
 <body>
 ${bs.navHtml()}

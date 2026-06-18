@@ -18,6 +18,7 @@
     return "#" + (1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1);
   }
   function stars(r) { var h = ""; r = +r || 5; for (var s = 1; s <= 5; s++) h += '<span class="star" style="opacity:' + (s <= r ? 1 : .25) + '">★</span>'; return h; }
+  function slugify(s) { return String(s == null ? "" : s).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 70) || "post"; }
   function serviceUrl(title) {
     var t = String(title || "").toLowerCase();
     if (/personal injury|workers/.test(t)) return "personal-injury-billing.html";
@@ -182,11 +183,12 @@
         esc(s.q) + '</span><div class="faq-icon">+</div></button><div class="faq-a"' + (i === 0 ? ' style="max-height:600px;"' : "") +
         '><div class="faq-a-inner">' + esc(s.a) + '</div></div></div>'; }).join(""); },
     blog: function (arr) { return arr.map(function (p, i) {
-      var img = p.image ? '<img class="blog-img" src="' + escAttr(p.image) + '" alt="' + escAttr(p.title) + '" loading="lazy" decoding="async">' : BLOG_FALLBACK;
+      var url = "blog-" + slugify(p.title) + ".html";
+      var img = p.image ? '<a href="' + url + '"><img class="blog-img" src="' + escAttr(p.image) + '" alt="' + escAttr(p.title) + '" loading="lazy" decoding="async"></a>' : '<a href="' + url + '">' + BLOG_FALLBACK + '</a>';
       return '<div class="blog-card">' + img + '<div class="blog-body"><span class="blog-tag">' + esc(p.tag || "Article") +
-        '</span><h3>' + esc(p.title) + '</h3><p class="blog-excerpt">' + esc(p.excerpt) + '</p><div class="blog-meta"><span>' +
+        '</span><h3><a href="' + url + '" style="color:inherit;">' + esc(p.title) + '</a></h3><p class="blog-excerpt">' + esc(p.excerpt) + '</p><div class="blog-meta"><span>' +
         esc(p.date) + '</span><span class="dot"></span><span>' + esc(p.author) + '</span></div>' +
-        '<button class="blog-readmore" onclick="HPX.openReader(' + i + ')">Read article →</button></div></div>'; }).join(""); }
+        '<a class="blog-readmore" href="' + url + '">Read article →</a></div></div>'; }).join(""); }
   };
 
   /* ════════ SCRAPE DEFAULTS FROM A DOCUMENT ════════ */
@@ -247,7 +249,7 @@
   }
 
   window.HPXCMS = {
-    esc: esc, escAttr: escAttr, copy: copy, shade: shade, stars: stars,
+    esc: esc, escAttr: escAttr, copy: copy, shade: shade, stars: stars, slugify: slugify,
     ICONS: ICONS, LI_SVG: LI_SVG, INSTA_SVG: INSTA_SVG, QUOTE_SVG: QUOTE_SVG, BLOG_FALLBACK: BLOG_FALLBACK, BLOG_DEFAULTS: BLOG_DEFAULTS,
     TEXTMAP: TEXTMAP, SCHEMA: SCHEMA, SECTION_ORDER: SECTION_ORDER, T: T, scrape: scrape,
     LS_CONTENT: "hpx_content_v2", LS_LEADS: "hpx_leads_v1", DEFAULT_PW: "horizon2026"

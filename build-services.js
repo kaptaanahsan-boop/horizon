@@ -354,7 +354,7 @@ function navHtml(active){
         </div>
       </div>
       <a href="index.html#leadership">Leadership</a>
-      <a href="index.html#blog">Blog</a>
+      <a href="blog.html">Blog</a>
       <a href="index.html#faq">FAQ</a>
     </div>
     <a class="btn btn-primary" href="index.html#final-cta">Schedule Consultation</a>
@@ -422,7 +422,7 @@ ${GA_TAG}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="service.css?v=2">
+<link rel="stylesheet" href="service.css?v=3">
 <script type="application/ld+json">${JSON.stringify([jsonld,breadcrumb,faqSchema])}</script>
 </head>
 <body>
@@ -499,11 +499,13 @@ ${faqAccordionJs()}
 </html>`;
 }
 
-var written=[];
-SERVICES.forEach(function(svc){
-  var file = path.join(OUT, svc.slug + ".html");
-  fs.writeFileSync(file, render(svc));
-  written.push(svc.slug + ".html");
-});
-console.log("Generated " + written.length + " pages:\n  " + written.join("\n  "));
-module.exports = { SERVICES };
+function generate(){
+  var written=[];
+  SERVICES.forEach(function(svc){
+    fs.writeFileSync(path.join(OUT, svc.slug + ".html"), render(svc));
+    written.push(svc.slug + ".html");
+  });
+  console.log("Generated " + written.length + " service pages:\n  " + written.join("\n  "));
+}
+if (require.main === module) generate();
+module.exports = { SERVICES, navHtml, footerHtml, faqAccordionJs, esc, render, generate, GA_TAG, ORIGIN, PHONE, EMAIL };

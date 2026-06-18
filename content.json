@@ -1,0 +1,3 @@
+cd "/Users/ahsankhursheed/IT Projects/Horizon Physician LLC/Horizon Physician Services LLC"
+pbpaste > content.json
+git add content.json && git commit -m "Publish content.json" && git push

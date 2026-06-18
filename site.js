@@ -62,7 +62,38 @@
     if (b.logo) $all(".nav-logo img").forEach(function (img) { img.src = b.logo; });
     if (b.company) $all(".nav-logo img").forEach(function (img) { img.alt = b.company; });
   }
-  function applyAll() { applyText(); renderOverrides(); bindContact(); applyBrand(); }
+  function applyAll() { applyText(); renderOverrides(); bindContact(); applyBrand(); injectSchema(); }
+
+  /* ── structured data (JSON-LD) for SEO ── */
+  function injectSchema() {
+    var ORIGIN = "https://horizonphysician.com";
+    var company = (content.brand && content.brand.company) || "Horizon Physician Services LLC";
+    var phone = (String(cVal("phone") || "").match(/\+?[\d][\d\s().-]{6,}/) || [""])[0].trim();
+    var org = {
+      "@context": "https://schema.org", "@type": "ProfessionalService",
+      "name": company,
+      "description": "Medical billing, coding, AR management, insurance follow-up, denial management, collections, and BPO call center support for healthcare providers.",
+      "url": ORIGIN + "/", "logo": ORIGIN + "/logo.png", "image": ORIGIN + "/logo.png",
+      "email": cVal("email"), "areaServed": "United States",
+      "knowsAbout": ["Medical Billing", "Medical Coding", "Revenue Cycle Management", "Accounts Receivable Management", "Denial Management", "Insurance Follow-Up", "Personal Injury Billing", "Collections", "BPO Call Center"]
+    };
+    if (phone) org.telephone = phone;
+    var sameAs = ["linkedin", "instagram", "facebook", "twitter"].map(function (k) { return sVal(k); }).filter(Boolean);
+    if (sameAs.length) org.sameAs = sameAs;
+    var addr = String(cVal("address") || "").replace(/<br\s*\/?>/gi, ", ").replace(/\s*,\s*,/g, ", ").replace(/\s+/g, " ").trim();
+    if (addr) org.address = { "@type": "PostalAddress", "streetAddress": addr, "addressCountry": "PK" };
+    var website = { "@context": "https://schema.org", "@type": "WebSite", "name": company, "url": ORIGIN + "/" };
+    var graph = [org, website];
+    var faq = effSection("faq") || [];
+    if (faq.length) {
+      graph.push({ "@context": "https://schema.org", "@type": "FAQPage", "mainEntity": faq.map(function (f) {
+        return { "@type": "Question", "name": f.q, "acceptedAnswer": { "@type": "Answer", "text": f.a } };
+      }) });
+    }
+    var s = document.getElementById("hpx-jsonld");
+    if (!s) { s = document.createElement("script"); s.id = "hpx-jsonld"; s.type = "application/ld+json"; document.head.appendChild(s); }
+    s.textContent = JSON.stringify(graph);
+  }
 
   /* ── overlays ── */
   function openOverlay(id) { var e = $("#" + id); if (e) { e.classList.add("open"); document.body.style.overflow = "hidden"; } }

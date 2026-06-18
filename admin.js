@@ -245,20 +245,66 @@
   function clearLeads() { if (!confirm("Delete all stored consultation requests?")) return; saveLS(C.LS_LEADS, []); renderLeads($("#editor")); buildSidebar(); toast("Leads cleared"); }
 
   /* ════════ PUBLISH ════════ */
+  var GH_TOKEN = "hpx_gh_token", GH_REPO = "hpx_gh_repo", GH_BRANCH = "hpx_gh_branch";
+  function ghToken() { return loadLS(GH_TOKEN) || ""; }
+  function ghRepo() { return loadLS(GH_REPO) || "kaptaanahsan-boop/horizon"; }
+  function ghBranch() { return loadLS(GH_BRANCH) || "main"; }
+  function ghHeaders() { return { "Authorization": "Bearer " + ghToken(), "Accept": "application/vnd.github+json", "Content-Type": "application/json" }; }
+
   function renderPublish(ed) {
-    ed.innerHTML = '<h2>Export &amp; Publish</h2><div class="sub">Make your edits permanent for all visitors.</div>' +
-      '<div class="hpx-callout"><strong>Easiest way to publish.</strong> Click <strong>Copy JSON</strong> below, then in Terminal run:<br>' +
-      '<code>cd "your project folder" &amp;&amp; pbpaste &gt; content.json &amp;&amp; git add content.json &amp;&amp; git commit -m "publish" &amp;&amp; git push</code></div>' +
-      '<button class="hpx-btn hpx-btn-primary hpx-btn-block" style="margin-bottom:10px;" onclick="ADM.copyContent()">📋 Copy JSON to clipboard</button>' +
-      '<button class="hpx-btn hpx-btn-ghost hpx-btn-block" style="margin-bottom:12px;" onclick="ADM.exportContent()">⬇ Or download content.json file</button>' +
-      '<textarea id="pubJson" readonly rows="6" style="font-family:monospace;font-size:12px;" onclick="this.select()">' + esc(JSON.stringify(content)) + '</textarea>' +
-      '<div class="hpx-field" style="margin-top:14px;"><label>Import a content file</label><input type="file" accept="application/json,.json" onchange="ADM.importContent(event)"></div>' +
+    var connected = !!ghToken();
+    ed.innerHTML = '<h2>Publish</h2><div class="sub">Push your saved edits live to the website — one click.</div>' +
+      '<div class="hpx-callout"><strong>One-click publish.</strong> Click the button and your changes go live on your site in about a minute. No terminal needed.</div>' +
+      '<button class="hpx-btn hpx-btn-primary hpx-btn-block" style="margin-bottom:8px;padding:15px;font-size:15px;" onclick="ADM.publishLive()">🚀 Publish to Live Site</button>' +
+      '<p class="hpx-note" style="margin-bottom:20px;">' + (connected ? "✓ Connected to GitHub — ready to publish." : "First time: you'll be asked to connect GitHub once (steps below).") + '</p>' +
+      '<div class="group-h">GitHub connection</div>' +
+      '<div class="hpx-field"><label>Repository (owner/name)</label><input id="gh_repo" value="' + escAttr(ghRepo()) + '"></div>' +
+      '<div class="hpx-field"><label>Branch</label><input id="gh_branch" value="' + escAttr(ghBranch()) + '"></div>' +
+      '<div class="hpx-field"><label>Access token ' + (connected ? "(saved — leave blank to keep)" : "") + '</label><input id="gh_token" type="password" placeholder="github_pat_…" autocomplete="off"></div>' +
+      '<button class="hpx-btn hpx-btn-ghost" onclick="ADM.saveGh()">Save GitHub Settings</button>' +
+      (connected ? ' <button class="hpx-btn hpx-btn-danger" onclick="ADM.clearGh()">Disconnect</button>' : "") +
+      '<div class="group-h">Backup / manual</div>' +
+      '<button class="hpx-btn hpx-btn-ghost hpx-btn-block" style="margin-bottom:8px;" onclick="ADM.copyContent()">📋 Copy JSON</button>' +
+      '<button class="hpx-btn hpx-btn-ghost hpx-btn-block" style="margin-bottom:12px;" onclick="ADM.exportContent()">⬇ Download content.json</button>' +
+      '<textarea id="pubJson" readonly rows="3" style="font-family:monospace;font-size:11px;" onclick="this.select()">' + esc(JSON.stringify(content)) + '</textarea>' +
+      '<div class="hpx-field" style="margin-top:12px;"><label>Import a content file</label><input type="file" accept="application/json,.json" onchange="ADM.importContent(event)"></div>' +
       '<div class="group-h">Danger zone</div>' +
       '<button class="hpx-btn hpx-btn-danger hpx-btn-block" onclick="ADM.resetAll()">Reset all content to original</button>';
   }
+  function saveGh() {
+    var r = $("#gh_repo").value.trim(); if (r) saveLS(GH_REPO, r);
+    var b = $("#gh_branch").value.trim(); if (b) saveLS(GH_BRANCH, b);
+    var t = $("#gh_token").value.trim(); if (t) saveLS(GH_TOKEN, t);
+    toast("GitHub settings saved"); renderPublish($("#editor"));
+  }
+  function clearGh() { localStorage.removeItem(GH_TOKEN); toast("Disconnected"); renderPublish($("#editor")); }
+  function publishLive() {
+    var token = ghToken();
+    if (!token) {
+      token = (prompt("Connect GitHub: paste your access token (stored only in this browser).") || "").trim();
+      if (!token) return;
+      saveLS(GH_TOKEN, token);
+    }
+    var repo = ghRepo(), branch = ghBranch(), api = "https://api.github.com/repos/" + repo + "/contents/content.json";
+    var b64 = btoa(unescape(encodeURIComponent(JSON.stringify(content, null, 2))));
+    toast("Publishing…");
+    fetch(api + "?ref=" + encodeURIComponent(branch), { headers: ghHeaders() })
+      .then(function (r) { if (r.status === 404) return { sha: undefined }; if (!r.ok) return r.json().then(function (e) { throw e; }); return r.json(); })
+      .then(function (j) {
+        return fetch(api, { method: "PUT", headers: ghHeaders(), body: JSON.stringify({ message: "Publish content via admin", content: b64, sha: j.sha, branch: branch }) })
+          .then(function (r) { return r.json().then(function (jj) { if (!r.ok) throw jj; return jj; }); });
+      })
+      .then(function () { toast("✅ Published! Your site updates in about a minute."); })
+      .catch(function (e) {
+        var msg = (e && e.message) || "Publish failed";
+        if (/bad credentials|requires authentication|401/i.test(JSON.stringify(e))) { localStorage.removeItem(GH_TOKEN); msg = "Token invalid or expired — click Publish to re-enter it."; }
+        else if (/not found/i.test(msg)) { msg = "Repo not found — check the Repository field (owner/name) and that the token can access it."; }
+        toast("❌ " + msg); renderPublish($("#editor"));
+      });
+  }
   function copyContent() {
     var txt = JSON.stringify(content, null, 2);
-    function ok() { toast("Copied! Now run  pbpaste > content.json"); }
+    function ok() { toast("Copied to clipboard"); }
     if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(txt).then(ok, fallback); }
     else fallback();
     function fallback() { var ta = $("#pubJson"); if (ta) { ta.select(); try { document.execCommand("copy"); ok(); } catch (e) { toast("Press Cmd+C to copy"); } } }
@@ -288,6 +334,7 @@
     itemAdd: itemAdd, itemDel: itemDel, itemMove: itemMove, itemImg: itemImg, saveSection: saveSection,
     saveContact: saveContact, saveBrand: saveBrand, resetColors: resetColors, uploadLogo: uploadLogo,
     exportLeads: exportLeads, clearLeads: clearLeads, exportContent: exportContent, copyContent: copyContent, importContent: importContent, resetAll: resetAll,
+    publishLive: publishLive, saveGh: saveGh, clearGh: clearGh,
     togglePreview: togglePreview, reloadPreview: reloadPreview
   };
 

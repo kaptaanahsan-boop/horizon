@@ -1071,12 +1071,22 @@
     }
     .mobile-menu a:hover { background: rgba(255,255,255,.06); color: white; }
     .mobile-menu .btn { margin-top: 8px; width: 100%; justify-content: center; }
-    .mobile-menu .mm-heading {
-      font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
-      color: var(--teal-light); padding: 14px 16px 6px; margin-top: 6px;
-      border-top: 1px solid rgba(255,255,255,.08);
-    }
     .mobile-menu { max-height: calc(100vh - 70px); overflow-y: auto; }
+    .mobile-menu .mm-group {
+      width: 100%; text-align: left; background: none; border: none; cursor: pointer;
+      color: rgba(255,255,255,.82); font-size: 15px; font-weight: 600; font-family: inherit;
+      padding: 13px 16px; border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .mobile-menu .mm-group:hover { background: rgba(255,255,255,.06); }
+    .mobile-menu .mm-caret { font-size: 12px; opacity: .7; transition: transform .25s ease; }
+    .mobile-menu .mm-group.open .mm-caret { transform: rotate(180deg); color: var(--teal-light); }
+    .mobile-menu .mm-sub {
+      display: none; flex-direction: column;
+      margin: 0 0 6px 18px; padding-left: 8px; border-left: 2px solid rgba(14,154,140,.45);
+    }
+    .mobile-menu .mm-sub.open { display: flex; }
+    .mobile-menu .mm-sub a { font-size: 14px; color: rgba(255,255,255,.62); padding: 10px 14px; }
 
     /* ─── Responsive ────────────────────────────────────────────── */
 
@@ -1577,22 +1587,45 @@
 
   <!-- Mobile menu -->
   <div class="mobile-menu" id="mobileMenu">
-    <a href="#about" onclick="toggleMenu()">About</a>
-    <a href="#process" onclick="toggleMenu()">Our Process</a>
+    <button class="mm-group" onclick="mmToggle(this)">BPO <span class="mm-caret">▾</span></button>
+    <div class="mm-sub">
+      <a href="bpo-call-center.html">Inbound Calls</a>
+      <a href="bpo-call-center.html">Outbound Calls</a>
+      <a href="bpo-call-center.html">Email &amp; Chat Support</a>
+      <a href="bpo-call-center.html">SMS Support</a>
+      <a href="bpo-call-center.html">BPO &amp; Call Center page</a>
+    </div>
+    <button class="mm-group" onclick="mmToggle(this)">Services <span class="mm-caret">▾</span></button>
+    <div class="mm-sub">
+      <a href="medical-billing.html">Medical Billing</a>
+      <a href="medical-coding.html">Medical Coding</a>
+      <a href="ar-management.html">AR Management</a>
+      <a href="denial-management.html">Denial Management</a>
+      <a href="insurance-follow-up.html">Insurance Follow-Up</a>
+      <a href="collections-support.html">Collections Support</a>
+      <a href="personal-injury-billing.html">Personal Injury Billing</a>
+      <a href="revenue-cycle-management.html">Revenue Cycle Management</a>
+      <a href="bpo-call-center.html">BPO &amp; Call Center</a>
+    </div>
+    <button class="mm-group" onclick="mmToggle(this)">About <span class="mm-caret">▾</span></button>
+    <div class="mm-sub">
+      <a href="#about" onclick="toggleMenu()">About Us</a>
+      <a href="#about" onclick="toggleMenu()">Mission, Vision &amp; Values</a>
+      <a href="#why" onclick="toggleMenu()">Why Choose Us</a>
+      <a href="#leadership" onclick="toggleMenu()">Our Leadership</a>
+    </div>
+    <button class="mm-group" onclick="mmToggle(this)">Our Process <span class="mm-caret">▾</span></button>
+    <div class="mm-sub">
+      <a href="#pstep0" onclick="toggleMenu()">1. Patient &amp; Claim Review</a>
+      <a href="#pstep1" onclick="toggleMenu()">2. Coding &amp; Submission</a>
+      <a href="#pstep2" onclick="toggleMenu()">3. Insurance Follow-Up</a>
+      <a href="#pstep3" onclick="toggleMenu()">4. AR &amp; Denial Management</a>
+      <a href="#pstep4" onclick="toggleMenu()">5. Revenue Recovery &amp; Reporting</a>
+    </div>
     <a href="#leadership" onclick="toggleMenu()">Leadership</a>
     <a href="#testimonials" onclick="toggleMenu()">Testimonials</a>
     <a href="#blog" onclick="toggleMenu()">Blog</a>
     <a href="#faq" onclick="toggleMenu()">FAQ</a>
-    <div class="mm-heading">Services</div>
-    <a href="medical-billing.html">Medical Billing</a>
-    <a href="medical-coding.html">Medical Coding</a>
-    <a href="ar-management.html">AR Management</a>
-    <a href="denial-management.html">Denial Management</a>
-    <a href="insurance-follow-up.html">Insurance Follow-Up</a>
-    <a href="collections-support.html">Collections Support</a>
-    <a href="personal-injury-billing.html">Personal Injury Billing</a>
-    <a href="revenue-cycle-management.html">Revenue Cycle Management</a>
-    <a href="bpo-call-center.html">BPO &amp; Call Center</a>
     <a class="btn btn-primary" href="#final-cta" onclick="toggleMenu()">Schedule Consultation</a>
   </div>
 
@@ -2584,6 +2617,11 @@
     // Mobile menu toggle
     function toggleMenu() {
       document.getElementById('mobileMenu').classList.toggle('open');
+    }
+    function mmToggle(btn) {
+      var sub = btn.nextElementSibling;
+      var open = btn.classList.toggle('open');
+      if (sub && sub.classList.contains('mm-sub')) sub.classList.toggle('open', open);
     }
 
     // FAQ accordion

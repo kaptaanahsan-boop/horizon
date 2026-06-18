@@ -171,7 +171,7 @@
       var socWrap = socs ? '<div class="team-socials">' + socs + '</div>' : "";
       var more = (String(s.bio || "").length > 150) ? '<button class="read-more-btn" onclick="toggleBio(\'tbio' + i + '\', this)">Read More <span class="arrow">▼</span></button>' : "";
       return '<div class="team-card"><div class="team-photo-wrap"><div class="team-photo-badge">' + esc(s.badge) +
-        '</div><img src="' + escAttr(s.photo) + '" alt="' + escAttr(s.name) + '"></div><div class="team-card-body"><div class="team-name">' +
+        '</div><img src="' + escAttr(s.photo) + '" alt="' + escAttr(s.name) + ', ' + escAttr(s.title) + ' at Horizon Physician Services" loading="lazy" decoding="async"></div><div class="team-card-body"><div class="team-name">' +
         esc(s.name) + '</div><div class="team-title">' + esc(s.title) + '</div><p class="team-bio" id="tbio' + i + '">' + esc(s.bio) + '</p>' + more + socWrap + '</div></div>'; }).join(""); },
     testimonials: function (arr) { return arr.map(function (s) {
       return '<div class="testi-card"><div class="testi-quote-icon">' + QUOTE_SVG + '</div><div class="stars">' + stars(s.rating) +
@@ -182,7 +182,7 @@
         esc(s.q) + '</span><div class="faq-icon">+</div></button><div class="faq-a"' + (i === 0 ? ' style="max-height:600px;"' : "") +
         '><div class="faq-a-inner">' + esc(s.a) + '</div></div></div>'; }).join(""); },
     blog: function (arr) { return arr.map(function (p, i) {
-      var img = p.image ? '<img class="blog-img" src="' + escAttr(p.image) + '" alt="' + escAttr(p.title) + '">' : BLOG_FALLBACK;
+      var img = p.image ? '<img class="blog-img" src="' + escAttr(p.image) + '" alt="' + escAttr(p.title) + '" loading="lazy" decoding="async">' : BLOG_FALLBACK;
       return '<div class="blog-card">' + img + '<div class="blog-body"><span class="blog-tag">' + esc(p.tag || "Article") +
         '</span><h3>' + esc(p.title) + '</h3><p class="blog-excerpt">' + esc(p.excerpt) + '</p><div class="blog-meta"><span>' +
         esc(p.date) + '</span><span class="dot"></span><span>' + esc(p.author) + '</span></div>' +

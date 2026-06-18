@@ -151,14 +151,15 @@
       return '<div class="step go" id="pstep' + i + '"><div class="step-ring-wrap"><div class="step-circle">' + (i + 1) +
         '</div></div><div class="step-body"><div class="step-icon">' + esc(s.emoji) + '</div><div class="step-num-badge">' + esc(s.badge) +
         '</div><div class="step-title">' + esc(s.title) + '</div><p class="step-desc">' + esc(s.desc) + '</p></div></div>'; }).join(""); },
-    team: function (arr) { return arr.map(function (s) {
+    team: function (arr) { return arr.map(function (s, i) {
       var socs = "";
       if (s.linkedin && s.linkedin !== "#") socs += '<a class="tsoc team-li" href="' + escAttr(s.linkedin) + '" target="_blank" rel="noopener" aria-label="LinkedIn">' + LI_SVG + '</a>';
       if (s.instagram && s.instagram !== "#") socs += '<a class="tsoc team-ig" href="' + escAttr(s.instagram) + '" target="_blank" rel="noopener" aria-label="Instagram">' + INSTA_SVG + '</a>';
       var socWrap = socs ? '<div class="team-socials">' + socs + '</div>' : "";
+      var more = (String(s.bio || "").length > 150) ? '<button class="read-more-btn" onclick="toggleBio(\'tbio' + i + '\', this)">Read More <span class="arrow">▼</span></button>' : "";
       return '<div class="team-card"><div class="team-photo-wrap"><div class="team-photo-badge">' + esc(s.badge) +
         '</div><img src="' + escAttr(s.photo) + '" alt="' + escAttr(s.name) + '"></div><div class="team-card-body"><div class="team-name">' +
-        esc(s.name) + '</div><div class="team-title">' + esc(s.title) + '</div><p class="team-bio">' + esc(s.bio) + '</p>' + socWrap + '</div></div>'; }).join(""); },
+        esc(s.name) + '</div><div class="team-title">' + esc(s.title) + '</div><p class="team-bio" id="tbio' + i + '">' + esc(s.bio) + '</p>' + more + socWrap + '</div></div>'; }).join(""); },
     testimonials: function (arr) { return arr.map(function (s) {
       return '<div class="testi-card"><div class="testi-quote-icon">' + QUOTE_SVG + '</div><div class="stars">' + stars(s.rating) +
         '</div><p class="testi-text">"' + esc(s.text) + '"</p><div class="testi-author"><div class="testi-avatar">' + esc(s.avatar) +
